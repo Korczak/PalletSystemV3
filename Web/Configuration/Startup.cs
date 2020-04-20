@@ -21,6 +21,8 @@ using Core.VirtualPallet.Details;
 using Core.Pallet.ProgramPallet;
 using Serilog.Events;
 using Core.Logging;
+using System.Reflection;
+using System.Linq;
 
 namespace Web
 {
@@ -54,7 +56,7 @@ namespace Web
 
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "Client/dist";
+                configuration.RootPath = "Frontend/dist";
             });
 
             services.AddSingleton(_runtimeStatus);
@@ -72,13 +74,15 @@ namespace Web
             services.AddSingleton<VirtualPalletService>();
             services.AddSingleton<VirtualPalletListDataAccess>();
             services.AddSingleton<VirtualPalletDetailsDataAccess>();
+
+            AutoConfigureServices(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var (config, configValidation) = GetConfig(Configuration);
 
-            var webStartup = new WebStartup(app, env);
+            var webStartup = new WebStartup(app, env, config);
             var loggingStartup = new LoggingStartup(config, new LoggingPaths());
 
             DatabaseConnection.SetConnection(config);
@@ -101,8 +105,10 @@ namespace Web
             var databaseName = configuration.GetValue<string>(nameof(Config.DatabaseName));
             var allowHosts = configuration.GetValue<string>(nameof(Config.AllowedHosts));
             var serverAddress = configuration.GetValue<string>(nameof(Config.Urls));
-            var logLevel = configuration.GetValue<LogEventLevel>(nameof(Config.LogLevel));
-            var config = new Config(connectionString, databaseName, allowHosts, logLevel, serverAddress);
+            var logLevel = configuration.GetValue<LogEventLevel>(nameof(Config.LogLevel)); 
+            var serveSwaggerUI = configuration.GetValue<bool>(nameof(Config.ServeSwaggerUI));
+
+            var config = new Config(connectionString, databaseName, allowHosts, logLevel, serverAddress, serveSwaggerUI);
 
             var validation = config.Validate();
 
@@ -144,6 +150,21 @@ namespace Web
             
             Console.ForegroundColor = originalForeground;
             Console.BackgroundColor = originalBackground;
+        }
+
+        private void AutoConfigureServices(IServiceCollection services)
+        {
+            var serviceStartupTypes = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => typeof(IServiceStartup).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                .ToArray();
+
+            foreach (var type in serviceStartupTypes)
+            {
+                var instance = (IServiceStartup)Activator.CreateInstance(type);
+                instance.ConfigureServices(services);
+            }
         }
     }
 }

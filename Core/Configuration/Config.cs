@@ -12,14 +12,17 @@ namespace Core.Configuration
         public string AllowedHosts { get; }
         public LogEventLevel LogLevel { get; }
         public string Urls { get; }
+        public bool ServeSwaggerUI { get; }
 
-        public Config(string connectionString, string databaseName, string allowedHosts, LogEventLevel logLevel, string urls)
+
+        public Config(string connectionString, string databaseName, string allowedHosts, LogEventLevel logLevel, string urls, bool serveSwaggerUI)
         {
             ConnectionString = connectionString;
             DatabaseName = databaseName;
             AllowedHosts = allowedHosts;
             LogLevel = logLevel;
             Urls = urls;
+            ServeSwaggerUI = serveSwaggerUI;
         }
 
         public ConfigurationValidation Validate()

@@ -38,49 +38,13 @@ namespace ManagementTool
                 case CLIENT_CMD:
                     WebClientGenerateSetup.GenerateWebClient();
                     break;
-                case UPGRADE_CMD:
-                    //RunMigrations();
-                    break;
-                case CREATE_CMD:
-                    //CreateDatabase();
-                    break;
                 default:
                     PrintHelp();
                     break;
             }
         }
 
-        //private void CreateDatabase()
-        //{
-        //    var appsettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
-        //    if (!File.Exists(appsettingsPath))
-        //    {
-        //        Console.WriteLine($"Cannot find file appsettings in {appsettingsPath}");
-        //        return;
-        //    }
-
-        //    var config = Config.FromFile(appsettingsPath);
-        //    DatabaseConnection.SetConnection(config);
-        //    DatabaseOperations.CreateDatabaseIfNotExists(config.ConnectionString);
-        //}
-
-
-        //private void RunMigrations()
-        //{
-        //    var appsettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
-        //    if (!File.Exists(appsettingsPath))
-        //    {
-        //        Console.WriteLine($"Cannot find file appsettings in {appsettingsPath}");
-        //        return;
-        //    }
-
-        //    var config = Config.FromFile(appsettingsPath);
-        //    DataConnection.DefaultSettings = new DatabaseSettings(config.ConnectionString);
-
-        //    Console.WriteLine("Running migrations");
-        //    DatabaseOperations.Upgrade(config.ConnectionString);
-        //}
-
+        
         private void PrintHelp()
         {
             Console.WriteLine($"Command not find: {_selectedCommand}");

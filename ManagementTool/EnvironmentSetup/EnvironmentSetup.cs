@@ -35,23 +35,15 @@ namespace ManagementTool.EnvironmentSetup
             var logLevel = config?.LogLevel ?? GetLogLevel();
             var serverAddress = config?.Urls ?? GetServerAddress();
 
-            config = new Config(connectionString, databaseName, allowedHosts, logLevel, serverAddress);
+            config = new Config(connectionString, databaseName, allowedHosts, logLevel, serverAddress, serveSwaggerUI: true);
 
             Console.WriteLine($"Writing config values to {envSettings.AppSettingsPath}");
             File.WriteAllText(envSettings.AppSettingsPath, JsonConvert.SerializeObject(config, Formatting.Indented));
-
-            //SetTestDatabase(envSettings);
 
             Console.WriteLine($"Creating connection string file for LINQ2DB in {envSettings.LinqToDbConnectionStringPath}");
             File.WriteAllText(envSettings.LinqToDbConnectionStringPath, connectionString);
 
             new DatabaseSettings(connectionString, databaseName);
-
-            //Console.WriteLine($"Creating database {databaseName} (if it does not exist)");
-            //DatabaseOperations.CreateDatabaseIfNotExists(connectionString);
-
-            //Console.WriteLine($"Running database migrations");
-            //DatabaseOperations.Upgrade(connectionString);
         }
 
         private static string GetConnectionString()

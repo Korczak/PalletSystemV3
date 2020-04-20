@@ -1,11 +1,11 @@
 ﻿using Core.Database.Models.Pallets;
+using Core.Database.Models.Users;
 using Core.Database.Models.VirtualPallets;
 using MongoDB.Driver;
-using MongoDB.Driver.Linq;
 
 namespace Core.Database.Settings
 {
-    public class DatabaseContext : IDatabaseContext
+    public class DatabaseContext
     {
         private readonly IMongoDatabase _db;
         public readonly MongoClient _client;
@@ -15,9 +15,9 @@ namespace Core.Database.Settings
             _client = client;
         }
 
-        public IMongoCollection<PalletModel> PalletsCollection => _db.GetCollection<PalletModel>("Pallet");
-        public IMongoQueryable<PalletModel> Pallets => _db.GetCollection<PalletModel>("Pallet").AsQueryable();
-        public IMongoQueryable<VirtualPalletModel> VirtualPallets => _db.GetCollection<VirtualPalletModel>("VirtualPallet").AsQueryable();
+        public IMongoCollection<PalletModel> Pallets => _db.GetCollection<PalletModel>("Pallet");
+        public IMongoCollection<VirtualPalletModel> VirtualPallets => _db.GetCollection<VirtualPalletModel>("VirtualPallet");
+        public IMongoCollection<User> Users => _db.GetCollection<User>("User");
 
     }
 }

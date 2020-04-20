@@ -26,7 +26,7 @@ namespace DatabaseTest
         {
             using(var handler = new DatabaseHandler())
             {
-                await handler.db.PalletsCollection.InsertOneAsync(new Core.Database.Models.Pallets.PalletModel() { RFID = "1" });
+                await handler.db.Pallets.InsertOneAsync(new Core.Database.Models.Pallets.PalletModel() { RFID = "1" });
             }
         }
     }
