@@ -1,3 +1,3 @@
 @echo off
 
-call dotnet %~dp0\Thaumatec.ManagementTool\bin\Debug\netcoreapp3.1\Thaumatec.ManagementTool.dll %*
+call dotnet %~dp0\PalletSystem.ManagementTool\bin\Debug\netcoreapp3.1\PalletSystem.ManagementTool.dll %*
