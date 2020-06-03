@@ -1,6 +1,6 @@
 ﻿using PalletSystem.Core.Pallet.Constant;
 
-namespace PalletSystem.Core.Pallet.Add
+namespace PalletSystem.Core.Pallet.Finish
 {
     public class PalletSource
     {

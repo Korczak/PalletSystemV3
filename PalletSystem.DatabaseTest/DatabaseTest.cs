@@ -1,14 +1,11 @@
-using PalletSystem.Core.Database.Settings;
-using PalletSystem.DatabaseTest.Configuration;
+﻿using PalletSystem.DatabaseTest.Configuration;
 using System;
-using Xunit;
 
 namespace PalletSystem.DatabaseTest
 {
-    [Collection("Database")]
-    public sealed class DeviceTests : IDisposable
+    public abstract class DatabaseTest : IDisposable
     {
-        public DeviceTests()
+        public DatabaseTest()
         {
             DatabaseSetup.Setup();
         }

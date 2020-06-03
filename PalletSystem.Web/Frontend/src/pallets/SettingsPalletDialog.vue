@@ -1,10 +1,8 @@
 <template>
-	<v-dialog v-model="dialog" @input="loadData" persistent max-width="360px">
+	<v-dialog v-model="dialog" persistent max-width="360px">
 		<template v-slot:activator="{ on }">
-			<v-btn width="80" height="80" icon v-on="on">
-				<v-icon style="font-size: 80px;" color="#90caf9"
-					>play_circle_filled</v-icon
-				>
+			<v-btn icon v-on="on">
+				<v-icon x-large color="#90caf9">settings</v-icon>
 			</v-btn>
 		</template>
 		<v-card>
@@ -16,23 +14,20 @@
 							<v-col cols="12">
 								<v-row>
 									<span class="headline black--text">{{
-										translation.AssignPalletToProgram
+										translation.PalletSettings
 									}}</span>
 								</v-row>
 								<v-row>
 									<span>RFID: {{ palletRFID }}</span>
 								</v-row>
 								<v-row>
-									<v-autocomplete
-										:label="translation.SelectProgram"
-										v-model="selectedProgram"
-										:items="programs"
-										required
-										:rules="[
-											v =>
-												!!v || this.translation.Required
-										]"
-									></v-autocomplete>
+									<v-checkbox
+										:label="translation.Disable"
+										:value="isDisabled"
+										on-icon="check_box"
+										off-icon="check_box_outline_blank"
+									>
+									</v-checkbox>
 								</v-row>
 							</v-col>
 						</v-row>
@@ -69,29 +64,14 @@ import {
 import SelectItem from "../common/SelectItem";
 
 @Component({ components: {} })
-export default class RunPalletDialog extends Mixins(Translation) {
+export default class SettingsPalletDialog extends Mixins(Translation) {
 	@Inject() readonly palletClient!: PalletsClient;
-	@Inject() readonly programClient!: ProgramClient;
 	@Prop() readonly palletRFID!: string;
 	@Prop() readonly palletId!: string;
 
 	dialog = false;
 	valid = false;
-	errorMessage: string | null = null;
-	programs: SelectItem[] = [];
-	selectedProgram: string | null = null;
-
-	async mounted() {
-		await this.loadData();
-	}
-
-	async loadData() {
-		const programs = await this.programClient.getPrograms();
-
-		this.programs = programs.map(
-			x => new SelectItem(x.programName!, x.programId!)
-		);
-	}
+	isDisabled = false;
 
 	closeDialog() {
 		this.dialog = false;
@@ -102,22 +82,6 @@ export default class RunPalletDialog extends Mixins(Translation) {
 			validate: () => boolean;
 		}).validate();
 		if (!this.valid) return;
-
-		let request: IPalletRunRequest = {
-			palletId: this.palletId!,
-			programId: this.selectedProgram!
-		};
-		let requestToSend = new PalletRunRequest(request);
-		console.log(requestToSend);
-		const result = await this.palletClient.runPallet(requestToSend);
-
-		if (result == PalletRunResult.PalletRun) {
-			this.closeDialog();
-			this.$emit("onAdded");
-			this.selectedProgram = null;
-		} else {
-			this.errorMessage = this.translation.RunError;
-		}
 	}
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-	<v-container align-center justify-center class="py-11 mx-11">
+	<v-container fluid align-center justify-center class="py-11 px-11">
 		<v-row>
 			<v-container class="px-9">
 				<v-row justify="center">
@@ -87,7 +87,6 @@ export default class ProgramMain extends Mixins(Translation) {
 
 	async loadData() {
 		const response = await this.programClient.getPrograms();
-		console.log(response);
 		this.programs = response;
 	}
 

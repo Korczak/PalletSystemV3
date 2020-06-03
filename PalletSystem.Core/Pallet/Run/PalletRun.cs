@@ -4,10 +4,10 @@ namespace PalletSystem.Core.Pallet.Run
 {
     public class PalletRun
     {
-        public ObjectId PalletId { get; }
-        public ObjectId ProgramId { get; }
+        public string PalletId { get; }
+        public string ProgramId { get; }
 
-        public PalletRun(ObjectId palletId, ObjectId programId)
+        public PalletRun(string palletId, string programId)
         {
             PalletId = palletId;
             ProgramId = programId;

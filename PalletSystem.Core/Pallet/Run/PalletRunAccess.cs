@@ -14,11 +14,25 @@ namespace PalletSystem.Core.Pallet.Run
 {
     public class PalletRunAccess
     {
-        public async Task<PalletSource> GetPalletSource(ObjectId id)
+        public async Task<PalletSource> GetPalletSource(string id)
         {
             using (var handler = new DatabaseHandler())
             {
-                return await handler.db.Pallets.AsQueryable().Where(x => x.Id == id).Select(x => new PalletSource(x.Id, x.Status)).FirstOrDefaultAsync();
+                return await handler.db.Pallets.AsQueryable()
+                    .Where(x => x.Id == id)
+                    .Select(x => new PalletSource(x.Id, x.Status))
+                    .FirstOrDefaultAsync();
+            }
+        }
+
+        public async Task<string> GetProgramId(string id)
+        {
+            using (var handler = new DatabaseHandler())
+            {
+                return await handler.db.ProgramSchemes.AsQueryable()
+                    .Where(x => x.Id == id)
+                    .Select(x => x.Id)
+                    .FirstOrDefaultAsync();
             }
         }
 
@@ -34,7 +48,7 @@ namespace PalletSystem.Core.Pallet.Run
                         PalletId = pallet.PalletId,
                         Program = new Programs()
                         {
-                            ProgramId = pallet.ProgramId
+                            Id = pallet.ProgramId
                         },
                         Status = Constant.PalletStatus.Running,
                         IsActive = true

@@ -124,10 +124,9 @@
 												></v-text-field>
 											</template>
 										</v-data-table>
-										<v-row justify="end" class="pr-2">
+										<v-row justify="end" class="pr-3">
 											<v-btn
 												:elevation="3"
-												fab
 												color="#00468b"
 												height="40"
 												width="40"

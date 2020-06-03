@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using PalletSystem.Core.Pallet.List;
 using PalletSystem.Core.Pallet.Add;
 using PalletSystem.Core.Pallet.Run;
+using PalletSystem.Core.Pallet.Finish;
 
 namespace PalletSystem.Web.Pallet
 {
@@ -13,12 +14,14 @@ namespace PalletSystem.Web.Pallet
         private readonly PalletListDataAccess _listDataAccess;
         private readonly PalletAddService _addService;
         private readonly PalletRunService _runService;
+        private readonly PalletFinishService _finishService;
 
-        public PalletsController(PalletListDataAccess listDataAccess, PalletAddService addService, PalletRunService runService)
+        public PalletsController(PalletListDataAccess listDataAccess, PalletAddService addService, PalletRunService runService, PalletFinishService finishService)
         {
             _listDataAccess = listDataAccess;
             _addService = addService;
             _runService = runService;
+            _finishService = finishService;
         }
 
         [HttpPost("api/pallet/run")]
@@ -28,6 +31,16 @@ namespace PalletSystem.Web.Pallet
             var result = await _runService.RunPallet(request);
 
             return Ok(result);
+        }
+
+
+        [HttpPost("api/pallet/finish")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        public async Task<IActionResult> FinishPallet([FromBody] PalletFinishRequest request)
+        {
+            await _finishService.FinishPallet(request);
+
+            return Ok();
         }
 
 

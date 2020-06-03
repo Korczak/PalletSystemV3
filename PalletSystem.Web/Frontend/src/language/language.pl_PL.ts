@@ -43,7 +43,18 @@ const language = {
 	Parameter: "Parametr",
 	WorkspaceSlot: "Miejsce maszyny",
 	Actions: "Akcje",
-	StepsInstruction: "Instrukcje"
+	StepsInstruction: "Instrukcje",
+	RunError: "Blad systemu, odswiez strone",
+	AssignPalletToProgram: "Uruchom palete",
+	SelectProgram: "Wybierz program",
+	FullReport: "Raport",
+	PalletSettings: "Ustawienia palety",
+	Disable: "Wylacz",
+	Ready: "Gotowy",
+	Waiting: "Czeka",
+	Running: "W trakcie wykonywania zadania",
+	Done: "Zadanie zrobione",
+	Error: "Blad"
 };
 
 export default language;

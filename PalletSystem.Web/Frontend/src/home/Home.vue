@@ -11,7 +11,7 @@ import Translation from "@/language/translation";
 @Component({})
 export default class Home extends Mixins(Translation) {
 	mounted() {
-		this.$router.push("PalletList");
+		this.$router.push("pallets");
 	}
 }
 </script>

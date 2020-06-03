@@ -47,7 +47,7 @@ namespace PalletSystem.Web.Configuration
                 {
                     configuration.UseSpa(spa =>
                     {
-                        spa.Options.SourcePath = "Client";
+                        spa.Options.SourcePath = "Frontend";
                         if (_env.IsDevelopment())
                         {
                             spa.UseProxyToSpaDevelopmentServer(DEVELOPMENT_CLIENT_URL);

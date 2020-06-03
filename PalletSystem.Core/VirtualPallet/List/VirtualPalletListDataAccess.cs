@@ -16,10 +16,10 @@ namespace PalletSystem.Core.VirtualPallet.List
             {
                 var palletInfo = from virtualPallets in handler.db.VirtualPallets.AsQueryable()
                                    where virtualPallets.IsActive
-                                   join program in handler.db.ProgramSchemes.AsQueryable() on virtualPallets.Program.ProgramId equals program.Id
+                                   join program in handler.db.ProgramSchemes.AsQueryable() on virtualPallets.Program.Id equals program.Id
                                    join pallet in handler.db.Pallets.AsQueryable() on virtualPallets.PalletId equals pallet.Id
                                    select new VirtualPalletInformation(
-                                       virtualPallets.Id.ToString(),
+                                       virtualPallets.Id,
                                        pallet.RFID, 
                                        program.Name, 
                                        virtualPallets.Program.ProgramStepsHistories.Count(), 

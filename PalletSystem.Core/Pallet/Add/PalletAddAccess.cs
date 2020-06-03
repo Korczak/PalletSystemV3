@@ -12,7 +12,7 @@ namespace PalletSystem.Core.Pallet.Add
 {
     public class PalletAddAccess
     {
-        public async Task<ObjectId> GetExistingPallet(string RFID)
+        public async Task<string> GetExistingPallet(string RFID)
         {
             using (var handler = new DatabaseHandler())
             {

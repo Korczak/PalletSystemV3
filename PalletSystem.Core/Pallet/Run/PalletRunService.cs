@@ -17,14 +17,16 @@ namespace PalletSystem.Core.Pallet.Run
 
         public async Task<PalletRunResult> RunPallet(PalletRunRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request == null || request.ProgramId == null || request.PalletId == null) throw new ArgumentNullException(nameof(request));
 
-            var palletSource = await _access.GetPalletSource(new ObjectId(request.PalletId));
+            var palletSource = await _access.GetPalletSource(request.PalletId);
+            var programId = await _access.GetProgramId(request.ProgramId);
 
             if (palletSource == default || palletSource.Id == default) return PalletRunResult.PalletNotExists;
             if (palletSource.Status != Constant.PalletStatus.Ready) return PalletRunResult.PalletNotReady;
+            if (programId == default) return PalletRunResult.ProgramNotExists;
 
-            await _access.RunPallet(new PalletRun(new ObjectId(request.PalletId), new ObjectId(request.ProgramId)));
+            await _access.RunPallet(new PalletRun(request.PalletId, request.ProgramId));
             return PalletRunResult.PalletRun;
         }
     }

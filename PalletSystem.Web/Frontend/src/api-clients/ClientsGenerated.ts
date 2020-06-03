@@ -224,6 +224,40 @@ export class PalletsClient {
         return Promise.resolve<PalletRunResult>(<any>null);
     }
 
+    finishPallet(request: PalletFinishRequest | null): Promise<void> {
+        let url_ = this.baseUrl + "/api/pallet/finish";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(request);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processFinishPallet(_response);
+        });
+    }
+
+    protected processFinishPallet(response: Response): Promise<void> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            return;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<void>(<any>null);
+    }
+
     addPallet(request: PalletAddRequest | null): Promise<PalletAddResult> {
         let url_ = this.baseUrl + "/api/pallet/add";
         url_ = url_.replace(/[?&]$/, "");
@@ -621,6 +655,46 @@ export interface IPalletRunRequest {
     programId?: string | null;
 }
 
+export class PalletFinishRequest implements IPalletFinishRequest {
+    palletId?: string | null;
+    rfid?: string | null;
+
+    constructor(data?: IPalletFinishRequest) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.palletId = _data["palletId"] !== undefined ? _data["palletId"] : <any>null;
+            this.rfid = _data["rfid"] !== undefined ? _data["rfid"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): PalletFinishRequest {
+        data = typeof data === 'object' ? data : {};
+        let result = new PalletFinishRequest();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["palletId"] = this.palletId !== undefined ? this.palletId : <any>null;
+        data["rfid"] = this.rfid !== undefined ? this.rfid : <any>null;
+        return data; 
+    }
+}
+
+export interface IPalletFinishRequest {
+    palletId?: string | null;
+    rfid?: string | null;
+}
+
 export enum PalletAddResult {
     PalletAdded = "PalletAdded",
     PalletAlreadyExists = "PalletAlreadyExists",
@@ -663,8 +737,7 @@ export interface IPalletAddRequest {
 }
 
 export class PalletInformation implements IPalletInformation {
-    palletId?: string | null;
-    virtualPalletId?: string | null;
+    id?: string | null;
     rfid?: string | null;
     programName?: string | null;
     stepsDone!: number;
@@ -682,8 +755,7 @@ export class PalletInformation implements IPalletInformation {
 
     init(_data?: any) {
         if (_data) {
-            this.palletId = _data["palletId"] !== undefined ? _data["palletId"] : <any>null;
-            this.virtualPalletId = _data["virtualPalletId"] !== undefined ? _data["virtualPalletId"] : <any>null;
+            this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
             this.rfid = _data["rfid"] !== undefined ? _data["rfid"] : <any>null;
             this.programName = _data["programName"] !== undefined ? _data["programName"] : <any>null;
             this.stepsDone = _data["stepsDone"] !== undefined ? _data["stepsDone"] : <any>null;
@@ -701,8 +773,7 @@ export class PalletInformation implements IPalletInformation {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["palletId"] = this.palletId !== undefined ? this.palletId : <any>null;
-        data["virtualPalletId"] = this.virtualPalletId !== undefined ? this.virtualPalletId : <any>null;
+        data["id"] = this.id !== undefined ? this.id : <any>null;
         data["rfid"] = this.rfid !== undefined ? this.rfid : <any>null;
         data["programName"] = this.programName !== undefined ? this.programName : <any>null;
         data["stepsDone"] = this.stepsDone !== undefined ? this.stepsDone : <any>null;
@@ -713,8 +784,7 @@ export class PalletInformation implements IPalletInformation {
 }
 
 export interface IPalletInformation {
-    palletId?: string | null;
-    virtualPalletId?: string | null;
+    id?: string | null;
     rfid?: string | null;
     programName?: string | null;
     stepsDone: number;
@@ -850,7 +920,7 @@ export interface IProgramInstruction {
 }
 
 export class ProgramInformation implements IProgramInformation {
-    programId!: number;
+    programId?: string | null;
     programName?: string | null;
     programDescription?: string | null;
     numberOfProgramSteps!: number;
@@ -891,7 +961,7 @@ export class ProgramInformation implements IProgramInformation {
 }
 
 export interface IProgramInformation {
-    programId: number;
+    programId?: string | null;
     programName?: string | null;
     programDescription?: string | null;
     numberOfProgramSteps: number;

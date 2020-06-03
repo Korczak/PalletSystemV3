@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using NodaTime;
 using PalletSystem.Core.Program.Constant;
 using System;
@@ -10,8 +11,10 @@ namespace PalletSystem.Core.Database.Models.VirtualPallet
 {
     public class ProgramStepsHistories
     {
-        [BsonId]
-        public ObjectId Id { get; set; }
+
+        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public int Step { get; set; }
         public LocalDateTime DateTime { get; set; }
         public string WorkspaceSlot { get; set; }

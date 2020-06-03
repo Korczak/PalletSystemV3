@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PalletSystem.Core.Pallet.Add;
+using PalletSystem.Core.Pallet.Finish;
 using PalletSystem.Core.Pallet.List;
 using PalletSystem.Core.Pallet.Run;
 using PalletSystem.Web.Configuration;
@@ -17,6 +18,9 @@ namespace PalletSystem.Web.Pallet
 
             services.AddSingleton<PalletRunService>();
             services.AddSingleton<PalletRunAccess>();
+
+            services.AddSingleton<PalletFinishService>();
+            services.AddSingleton<PalletFinishAccess>();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace PalletSystem.Core.Pallet.Add
 
         public async Task<PalletAddResult> AddPallet(PalletAddRequest request)
         {
-            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (request == null || request.RFID == null) throw new ArgumentNullException(nameof(request));
 
             var existingPallet = await _access.GetExistingPallet(request.RFID);
             if (existingPallet != default)

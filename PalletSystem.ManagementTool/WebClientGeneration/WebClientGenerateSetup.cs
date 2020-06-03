@@ -29,6 +29,7 @@ namespace PalletSystem.ManagementTool.WebClientGeneration
             }
             Console.WriteLine("Generating web client by nswag");
             NswagRun($"run { settings.NswagConfigPath } /runtime:NetCore31");
+            NswagRun($"run { settings.NswqgConfigConnectorPath } /runtime:NetCore31");
         }
 
         private static void NswagRun(string command)

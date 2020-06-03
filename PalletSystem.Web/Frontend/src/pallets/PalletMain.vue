@@ -1,5 +1,5 @@
 <template>
-	<v-container align-center justify-center class="py-11 mx-11">
+	<v-container fluid align-center justify-center class="py-11 px-11">
 		<v-row>
 			<v-container class="px-9">
 				<v-row justify="center">
@@ -25,7 +25,15 @@
 			</v-container>
 			<v-container class="py-0 px-9" fluid>
 				<div>
-					<v-data-table
+					<v-row over>
+						<pallet-item
+							v-for="item in pallets"
+							:key="item.id"
+							:pallet="item"
+						></pallet-item>
+					</v-row>
+
+					<!-- <v-data-table
 						class="dataTable"
 						:headers="headers"
 						:items="pallets"
@@ -49,21 +57,18 @@
 							</span>
 						</template>
 						<template v-slot:item.actions="{ item }">
-							<v-btn
-								v-if="isPalletReady(item.status)"
-								width="35"
-								height="35"
-								icon
+							<run-pallet-dialog
+								v-if="isPalletReady(item.palletStatus)"
+								@onAdded="loadData"
+								:palletRFID="item.rfid"
+								:palletId="item.id"
 							>
-								<v-icon x-large color="#90caf9"
-									>play_circle_filled</v-icon
-								>
-							</v-btn>
+							</run-pallet-dialog>
 							<v-btn v-else width="35" height="35" icon>
 								<v-icon x-large color="#90caf9">forward</v-icon>
 							</v-btn>
 						</template>
-					</v-data-table>
+					</v-data-table> -->
 				</div>
 			</v-container>
 		</v-row>
@@ -85,8 +90,9 @@ import {
 import { globalStore } from "@/main";
 import moment from "moment";
 import AddPalletDialog from "./AddPalletDialog.vue";
+import PalletItem from "./PalletItem.vue";
 
-@Component({ components: { AddPalletDialog } })
+@Component({ components: { AddPalletDialog, PalletItem } })
 export default class PalletMain extends Mixins(Translation) {
 	@Inject() readonly palletClient!: PalletsClient;
 
@@ -116,10 +122,6 @@ export default class PalletMain extends Mixins(Translation) {
 				value: "actions"
 			}
 		];
-	}
-
-	isPalletReady(status: PalletStatus): boolean {
-		return status == PalletStatus.Ready;
 	}
 }
 </script>
