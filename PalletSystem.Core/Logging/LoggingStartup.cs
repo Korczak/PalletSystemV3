@@ -18,8 +18,7 @@ namespace PalletSystem.Core.Logging
 
         public IStartupValidation Configure()
         {
-            string logName = DateTime.Now.ToShortDateString();
-            var logPath = Path.Combine(_paths.LoggerPath, $"log_{logName}.log");
+            var logPath = Path.Combine(_paths.LoggerPath, $"logger.log");
             File.Create(logPath);
 
             Log.Logger = new LoggerConfiguration()
