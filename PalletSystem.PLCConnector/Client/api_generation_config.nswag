@@ -98,7 +98,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "EKFD.DeviceConnector.Client",
+      "namespace": "PalletSystem.PLCConnector.Client",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "NodaTime.LocalDate",
       "jsonConverters": null,

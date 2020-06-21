@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using PalletSystem.PLCConnector.Client;
 using PeterKottas.DotNetCore.WindowsService;
 using S7.Net;
 using Serilog;
@@ -20,11 +21,25 @@ namespace PalletSystem.PLCConnector
                 .WriteTo.Console(
                         restrictedToMinimumLevel: Config.ConsoleLogLevel)
                 .WriteTo.RollingFile(
-                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", "ekf-link-connector-{Date}.log"),
+                        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs", "plc-connector-{Date}.log"),
                         restrictedToMinimumLevel: Config.ConsoleLogLevel,
                         shared: true)
                 .CreateLogger();
 
+            ConnectorClient webService = null;
+            Connector connector = new Connector("Connector1");
+            Config webConfig = null;
+
+            try
+            {
+                webConfig = GetConfig();
+                webService = new ConnectorClient(webConfig.WebApiUrl, new System.Net.Http.HttpClient());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Configuration error occured");
+                return;
+            }
 
             ServiceRunner<ServiceConnector>.Run(config =>
             {
@@ -36,7 +51,7 @@ namespace PalletSystem.PLCConnector
                 {
                     serviceConfig.ServiceFactory((svc, extraArguments) =>
                     {
-                        return new ServiceConnector(Config);
+                        return new ServiceConnector(connector, Config, webService);
                     });
                     serviceConfig.OnStart((service, extraArguments) =>
                     {

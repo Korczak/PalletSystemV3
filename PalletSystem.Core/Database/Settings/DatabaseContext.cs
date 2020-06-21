@@ -18,6 +18,8 @@ namespace PalletSystem.Core.Database.Settings
         public IMongoCollection<Models.User.Users> Users => _db.GetCollection<Models.User.Users>("User");
         public IMongoCollection<Models.ProgramScheme.ProgramSchemes> ProgramSchemes => _db.GetCollection<Models.ProgramScheme.ProgramSchemes>("ProgramScheme");
         public IMongoCollection<Models.VirtualPallet.VirtualPallets> VirtualPallets => _db.GetCollection<Models.VirtualPallet.VirtualPallets>("VirtualPallet");
+        public IMongoCollection<Models.Connector.Connector> Connectors => _db.GetCollection<Models.Connector.Connector>("Connector");
+        public IMongoCollection<Models.Plc.PLCs> PLCs => _db.GetCollection<Models.Plc.PLCs>("PLC");
 
     }
 }

@@ -1,42 +1,54 @@
-﻿using EKFD.DeviceConnector.Client;
-using S7.Net;
-using S7.Net.Types;
+﻿using PalletSystem.PLCConnector.Client;
+using PalletSystem.PLCConnector.PlcConnector;
+using PalletSystem.PLCConnector.WebConnect;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace PalletSystem.PLCConnector
 {
-    public class ServiceConnector : IDisposable
+    public class ServiceConnector
     {
-        private System.Timers.Timer _timer; 
+        private System.Timers.Timer _timer;
         private readonly SemaphoreSlim _connectToServerSemaphore = new SemaphoreSlim(1);
-        private bool _isServerConnected;
-        private Plc _plc; 
         private readonly ConnectorClient _webClient;
+        private readonly WebConnectorService _webConnectorService;
+        private readonly PlcConnectorService _plcConnectorService;
+        private readonly Connector _connector;
+        private readonly Config _config;
 
-        public ServiceConnector(Config config, ConnectorClient client)
+        public bool IsConnected { get; }
+
+        public ServiceConnector(Connector connector, Config config, ConnectorClient client)
         {
-            _plc = new Plc(CpuType.S71200, config.Ip, config.Rack, config.Slot);
             _webClient = client;
+            _connector = connector;
+            _config = config;
+            _webConnectorService = new WebConnectorService(connector, client, config);
+            _plcConnectorService = new PlcConnectorService(config);
+            _timer = new System.Timers.Timer()
+            {
+                AutoReset = true,
+                Interval = 5000
+            };
+            _timer.Elapsed += SyncTimerTimeElapsed;
         }
 
         public void Start()
         {
-            _plc.Open();
-            _timer = new System.Timers.Timer()
+            var plcConnectTask = _plcConnectorService.Connect();
+            var webConnectTask = _webConnectorService.ConnectToServer();
+
+            Task.WaitAll(plcConnectTask, webConnectTask);
+            if (!_plcConnectorService.IsConnected || !_webConnectorService.IsConnected)
             {
-                AutoReset = true,
-                Interval = 3000
-            };
-            _timer.Elapsed += SyncTimerTimeElapsed;
-            _timer.Start();
+                Log.Error("Plc or Web is not connected");
+                return;
+            }
+            else
+            {
+                _timer.Start();
+            }
         }
 
         public void Stop()
@@ -44,17 +56,11 @@ namespace PalletSystem.PLCConnector
             _timer.Stop();
         }
 
-        public void Dispose()
-        {
-            _plc.Close();
-        }
-
         private void SyncTimerTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if(!_plc.IsConnected)
-            {
-                Log.Information("Trying to connect to plc...");
-            }
+            var results = _plcConnectorService.PlcReadData().GetAwaiter().GetResult();
+
+            Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}, Results: {results.PcResultsModel}");
         }
     }
 }

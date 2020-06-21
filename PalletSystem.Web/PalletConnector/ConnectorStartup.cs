@@ -1,11 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
+using PalletSystem.Core.Devices.ConnectConnector;
+using PalletSystem.Core.Devices.SyncConnector;
+using PalletSystem.Core.Devices.UpdateConnections;
+using PalletSystem.Core.Pallet.Run;
+using PalletSystem.Web.Configuration;
 
 namespace PalletSystem.Web.PalletConnector
 {
-    public class ConnectorStartup
+    public class ConnectorStartup : IServiceStartup
     {
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<ConnectConnectorAccess>();
+            services.AddSingleton<ConnectConnectorService>();
+            
+            services.AddSingleton<UpdateConnectionsAccess>();
+            services.AddSingleton<UpdateConnectionsHub>();
+            services.AddSingleton<UpdateConnectionsService>();
+
+            services.AddSingleton<SyncConnectorAccess>();
+            services.AddSingleton<SyncConnectorService>();
+
+            services.AddSingleton<PalletRunAccess>();
+            services.AddSingleton<PalletRunService>();
+        }
     }
 }

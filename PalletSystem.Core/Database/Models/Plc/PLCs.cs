@@ -2,17 +2,20 @@
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using PalletSystem.Core.Pallet.Constant;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
-namespace PalletSystem.Core.Database.Models.Pallet
+namespace PalletSystem.Core.Database.Models.Plc
 {
-    public class Pallets
+    public class PLCs
     {
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        public string ConnectorId { get; set; }
+        public string Name { get; set; }
+        public ConnectionStatus ConnectionStatus { get; set; }
 
-        public string RFID { get; set; }
-        public PalletStatus Status { get; set; }
-        public bool IsDelete { get; set; }
     }
 }
