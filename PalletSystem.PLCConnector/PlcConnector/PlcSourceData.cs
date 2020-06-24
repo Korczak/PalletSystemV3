@@ -6,13 +6,11 @@ namespace PalletSystem.PLCConnector.PlcConnector
     {
         public PcModel PcModel { get; }
         public PlcModel PlcModel { get; }
-        public PcResultsModel PcResultsModel { get; }
 
-        public PlcSourceData(PcModel pcModel, PlcModel plcModel, PcResultsModel pcResultsModel)
+        public PlcSourceData(PcModel pcModel, PlcModel plcModel)
         {
             PcModel = pcModel;
             PlcModel = plcModel;
-            PcResultsModel = pcResultsModel;
         }
     }
 }

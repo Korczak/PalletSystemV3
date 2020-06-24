@@ -35,14 +35,14 @@ namespace PalletSystem.DatabaseTest.PalletTests
                 {
                     new ProgramStepsInstructionSchemes()
                     {
-                        MachineMask = "111",
+                        OperationMask = "111",
                         Step = 1,
                         Parameters = new List<string>() { "1.2" },
                         WorkspaceSlot = "1"
                     },
                     new ProgramStepsInstructionSchemes()
                     {
-                        MachineMask = "111",
+                        OperationMask = "111",
                         Step = 2,
                         Parameters = new List<string>() { "1.2" },
                         WorkspaceSlot = "2"

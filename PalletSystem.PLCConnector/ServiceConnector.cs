@@ -60,7 +60,7 @@ namespace PalletSystem.PLCConnector
         {
             var results = _plcConnectorService.PlcReadData().GetAwaiter().GetResult();
 
-            Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}, Results: {results.PcResultsModel}");
+            Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}");
         }
     }
 }

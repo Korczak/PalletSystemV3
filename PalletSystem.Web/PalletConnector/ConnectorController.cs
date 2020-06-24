@@ -36,8 +36,6 @@ namespace PalletSystem.Web.PalletConnector
         //    return Ok(result);
         //}
 
-
-
         [HttpPost]
         [Route("/api/connector/sync")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(SyncConnectorModel))]

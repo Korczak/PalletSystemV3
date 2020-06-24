@@ -21,7 +21,7 @@ namespace PalletSystem.Core.Program.Add
                         programInstruction.Add(new ProgramStepsInstructionSchemes()
                         {
                             Command = instruction.Command,
-                            MachineMask = instruction.MachineMask,
+                            OperationMask = instruction.MachineMask,
                             Parameters = instruction.Parameters,
                             Step = instruction.Step,
                             WorkspaceSlot = instruction.WorkspaceSlot

@@ -45,14 +45,12 @@ namespace PalletSystem.PLCConnector.PlcConnector
         {
             var pcInformation = new PcModel();
             var plcInformation = new PlcModel();
-            var pcResultsModel = new PcResultsModel();
 
             await Task.WhenAll(
                 _plc.ReadClassAsync(pcInformation, 1),
-                _plc.ReadClassAsync(plcInformation, 1, 54),
-                _plc.ReadClassAsync(pcResultsModel, 1, 108));
+                _plc.ReadClassAsync(plcInformation, 1, 44));
 
-            return new PlcSourceData(pcInformation, plcInformation, pcResultsModel);
+            return new PlcSourceData(pcInformation, plcInformation);
         }
     }
 }

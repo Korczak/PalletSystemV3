@@ -1,6 +1,6 @@
 ﻿namespace PalletSystem.PLCConnector.PlcConnector.Models
 {
-    public class PcResultsItem
+    public class ResultsItem
     {
         public int Id { get; set; }
         public float Value { get; set; }

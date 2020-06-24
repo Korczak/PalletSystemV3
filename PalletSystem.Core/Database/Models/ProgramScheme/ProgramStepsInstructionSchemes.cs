@@ -13,7 +13,7 @@ namespace PalletSystem.Core.Database.Models.ProgramScheme
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public int Step { get; set; }
-        public string MachineMask { get; set; }
+        public string OperationMask { get; set; }
         public string Command { get; set; }
         public IEnumerable<string> Parameters { get; set; } = new List<string>();
         public string WorkspaceSlot { get; set; }
