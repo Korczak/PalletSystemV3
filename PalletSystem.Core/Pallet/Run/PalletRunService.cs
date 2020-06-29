@@ -1,7 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using PalletSystem.Core.Pallet.StatusHub;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PalletSystem.Core.Pallet.Run
@@ -9,10 +7,12 @@ namespace PalletSystem.Core.Pallet.Run
     public class PalletRunService
     {
         private readonly PalletRunAccess _access;
+        private readonly PalletStatusHub _statusHub;
 
-        public PalletRunService(PalletRunAccess access)
+        public PalletRunService(PalletRunAccess access, PalletStatusHub statusHub)
         {
             _access = access;
+            _statusHub = statusHub;
         }
 
         public async Task<PalletRunResult> RunPallet(PalletRunRequest request)
@@ -21,12 +21,14 @@ namespace PalletSystem.Core.Pallet.Run
 
             var palletSource = await _access.GetPalletSource(request.PalletId);
             var programId = await _access.GetProgramId(request.ProgramId);
+            var instrucions = await _access.GetProgramInstructions(request.ProgramId);
 
             if (palletSource == default || palletSource.Id == default) return PalletRunResult.PalletNotExists;
             if (palletSource.Status != Constant.PalletStatus.Ready) return PalletRunResult.PalletNotReady;
             if (programId == default) return PalletRunResult.ProgramNotExists;
 
-            await _access.RunPallet(new PalletRun(request.PalletId, request.ProgramId));
+            await _access.RunPallet(new PalletRun(request.PalletId, request.ProgramId, instrucions));
+            await _statusHub.ActualStatusUpdate(Constant.PalletStatus.Running);
             return PalletRunResult.PalletRun;
         }
     }

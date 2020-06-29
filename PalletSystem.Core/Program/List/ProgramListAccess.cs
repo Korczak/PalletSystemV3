@@ -15,7 +15,7 @@ namespace PalletSystem.Core.Program.List
             {
                 return await handler.db.ProgramSchemes.AsQueryable()
                     .Where(x => !x.IsDelete)
-                    .Select(x => new ProgramInformation(x.Id.ToString(), x.Name, x.Description, x.ProgramStepsInstructionSchemes.Count()))
+                    .Select(x => new ProgramInformation(x.Id.ToString(), x.Name, x.Description, x.ProgramStepsInstructions.Count()))
                     .ToListAsync();
             }
         }

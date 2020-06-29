@@ -23,7 +23,7 @@ namespace PalletSystem.Core.VirtualPallet.List
                                        pallet.RFID, 
                                        program.Name, 
                                        virtualPallets.Program.ProgramStepsHistories.Count(), 
-                                       program.ProgramStepsInstructionSchemes.Count(),
+                                       program.ProgramStepsInstructions.Count(),
                                        virtualPallets.Status);
 
                 return await palletInfo.ToListAsync();

@@ -51,79 +51,159 @@
 								</v-row>
 								<v-row>
 									<v-container fluid>
-										<v-data-table
-											class="dataTable"
-											:headers="headers"
-											:items="steps"
-											hide-default-footer
-										>
-											<template
-												v-slot:item.step="{ item }"
-											>
-												{{ item.step }}
+										<v-simple-table class="dataTable">
+											<template v-slot:default>
+												<thead>
+													<tr>
+														<th
+															v-for="header in headers"
+															:key="header.value"
+															class="text-left"
+														>
+															{{ header.text }}
+														</th>
+													</tr>
+													<tr>
+														<th class="text-left">
+															Parameter 1
+														</th>
+														<th class="text-left">
+															Parameter 2
+														</th>
+														<th class="text-left">
+															Parameter 3
+														</th>
+														<th class="text-left">
+															Parameter 4
+														</th>
+														<th class="text-left">
+															Parameter 5
+														</th>
+													</tr>
+												</thead>
+												<tbody
+													v-for="item in steps"
+													:key="item.step"
+												>
+													<tr>
+														<td>
+															{{ item.step }}
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.machineMask
+																"
+																required
+																:rules="[
+																	v =>
+																		!!v ||
+																		translation.Required
+																]"
+															></v-text-field>
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.command
+																"
+																required
+																:rules="[
+																	v =>
+																		!!v ||
+																		translation.Required
+																]"
+															></v-text-field>
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.workspaceSlot
+																"
+																required
+																:rules="[
+																	v =>
+																		!!v ||
+																		translation.Required
+																]"
+															></v-text-field>
+														</td>
+													</tr>
+													<tr>
+														<td>
+															<v-text-field
+																v-model="
+																	item.parameter1
+																"
+															></v-text-field>
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.parameter2
+																"
+															></v-text-field>
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.parameter3
+																"
+															></v-text-field>
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.parameter4
+																"
+															></v-text-field>
+														</td>
+														<td>
+															<v-text-field
+																v-model="
+																	item.parameter5
+																"
+															></v-text-field>
+														</td>
+													</tr>
+												</tbody>
+												<!-- 
+												<template
+													v-slot:item.parameter="{
+														item
+													}"
+												>
+													<v-text-field
+														v-model="
+															item.parameters
+														"
+														required
+														:rules="[
+															v =>
+																!!v ||
+																translation.Required
+														]"
+													></v-text-field>
+												</template>
+												<template
+													v-slot:item.workspaceSlot="{
+														item
+													}"
+												>
+													<v-text-field
+														v-model="
+															item.workspaceSlot
+														"
+														required
+														:rules="[
+															v =>
+																!!v ||
+																translation.Required
+														]"
+													></v-text-field>
+												</template> -->
 											</template>
-											<template
-												v-slot:item.machineMask="{
-													item
-												}"
-											>
-												<v-text-field
-													v-model="item.machineMask"
-													required
-													:rules="[
-														v =>
-															!!v ||
-															translation.Required
-													]"
-												></v-text-field>
-											</template>
-
-											<template
-												v-slot:item.command="{
-													item
-												}"
-											>
-												<v-text-field
-													v-model="item.command"
-													required
-													:rules="[
-														v =>
-															!!v ||
-															translation.Required
-													]"
-												></v-text-field>
-											</template>
-											<template
-												v-slot:item.parameter="{
-													item
-												}"
-											>
-												<v-text-field
-													v-model="item.parameters"
-													required
-													:rules="[
-														v =>
-															!!v ||
-															translation.Required
-													]"
-												></v-text-field>
-											</template>
-											<template
-												v-slot:item.workspaceSlot="{
-													item
-												}"
-											>
-												<v-text-field
-													v-model="item.workspaceSlot"
-													required
-													:rules="[
-														v =>
-															!!v ||
-															translation.Required
-													]"
-												></v-text-field>
-											</template>
-										</v-data-table>
+										</v-simple-table>
 										<v-row justify="end" class="pr-3">
 											<v-btn
 												:elevation="3"
@@ -214,7 +294,6 @@ export default class AddPalletDialog extends Mixins(Translation) {
 			{ text: this.translation.Step, value: "step" },
 			{ text: this.translation.MachineMask, value: "machineMask" },
 			{ text: this.translation.Command, value: "command" },
-			{ text: this.translation.Parameter, value: "parameter" },
 			{
 				text: this.translation.WorkspaceSlot,
 				sortable: false,

@@ -48,6 +48,7 @@ namespace PalletSystem.Web
             services.AddSingleton(_runtimeStatus);
             services.AddSingleton<IClock>(SystemClock.Instance);
             services.AddSwaggerDocument();
+            services.AddSignalR();
 
             AutoConfigureServices(services);
         }
@@ -55,6 +56,9 @@ namespace PalletSystem.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             var (config, configValidation) = GetConfig(Configuration);
+
+            app.UseRouting();
+            AutoConfigureEndPoints(app);
 
             var webStartup = new WebStartup(app, env);
             var loggingStartup = new LoggingStartup(config, new LoggingPaths());
@@ -138,6 +142,20 @@ namespace PalletSystem.Web
             {
                 var instance = (IServiceStartup)Activator.CreateInstance(type);
                 instance.ConfigureServices(services);
+            }
+        }
+        private void AutoConfigureEndPoints(IApplicationBuilder app)
+        {
+            var endpointsSetups = Assembly
+                .GetExecutingAssembly()
+                .GetTypes()
+                .Where(t => typeof(IEndpointsSetup).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract)
+                .ToArray();
+
+            foreach (var type in endpointsSetups)
+            {
+                var instance = (IEndpointsSetup)Activator.CreateInstance(type);
+                instance.ConfigureEndpoints(app);
             }
         }
     }

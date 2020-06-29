@@ -6,7 +6,8 @@ namespace PalletSystem.Core.Program.Constant
 {
     public enum ProgramStatus
     {
-        Successful,
-        Failure
+        Running,
+        Done,
+        Error
     }
 }

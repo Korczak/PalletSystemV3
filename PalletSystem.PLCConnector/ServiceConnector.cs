@@ -2,6 +2,7 @@
 using PalletSystem.PLCConnector.PlcConnector;
 using PalletSystem.PLCConnector.WebConnect;
 using Serilog;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -58,9 +59,16 @@ namespace PalletSystem.PLCConnector
 
         private void SyncTimerTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var results = _plcConnectorService.PlcReadData().GetAwaiter().GetResult();
-
-            Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}");
+            Log.Information("Reading from PLC");
+            try
+            {
+                var results = _plcConnectorService.PlcReadData().GetAwaiter().GetResult();
+                Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}");
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "Could not read from PLC");
+            }
         }
     }
 }

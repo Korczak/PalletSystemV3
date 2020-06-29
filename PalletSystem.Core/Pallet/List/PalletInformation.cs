@@ -2,6 +2,7 @@
 
 using PalletSystem.Core.Pallet.Constant;
 using MongoDB.Bson;
+using PalletSystem.Core.VirtualPallet.Constants;
 
 namespace PalletSystem.Core.Pallet.List
 {
@@ -12,6 +13,8 @@ namespace PalletSystem.Core.Pallet.List
         public string ProgramName { get; }
         public int StepsDone { get; }
         public int StepsTotal { get; }
+        public bool IsVirtualPalletActive { get; }
+        public VirtualPalletStatus VirtualPalletStatus { get; }
         public PalletStatus PalletStatus { get; }
 
         public PalletInformation(string id, string rFID, PalletStatus palletStatus)
@@ -19,16 +22,19 @@ namespace PalletSystem.Core.Pallet.List
             Id = id;
             RFID = rFID;
             PalletStatus = palletStatus;
+            IsVirtualPalletActive = false;
         }
 
-        public PalletInformation(string id, string rFID, string programName, int stepsDone, int stepsTotal, PalletStatus palletStatus)
+        public PalletInformation(string id, string rFID, string programName, int stepsDone, int stepsTotal, VirtualPalletStatus virtualPalletStatus, PalletStatus palletStatus)
         {
             Id = id;
             RFID = rFID;
             ProgramName = programName;
             StepsDone = stepsDone;
             StepsTotal = stepsTotal;
+            VirtualPalletStatus = virtualPalletStatus;
             PalletStatus = palletStatus;
+            IsVirtualPalletActive = true;
         }
     }
 }

@@ -36,13 +36,13 @@
 							<v-layout justify-center>
 								<run-pallet-dialog
 									v-if="isPalletReady"
-									@onAdded="emit('onAdded')"
+									@onAdded="added()"
 									:palletRFID="pallet.rfid"
 									:palletId="pallet.id"
 								></run-pallet-dialog>
 								<reset-pallet-dialog
 									v-if="isPalletDone"
-									@onAdded="emit('onAdded')"
+									@onAdded="added()"
 									:palletRFID="pallet.rfid"
 									:palletId="pallet.id"
 								></reset-pallet-dialog>
@@ -71,7 +71,8 @@ import {
 	UserLoginResult,
 	PalletsClient,
 	PalletInformation,
-	PalletStatus
+	PalletStatus,
+	VirtualPalletStatus
 } from "../api-clients/ClientsGenerated";
 import { globalStore } from "@/main";
 import moment from "moment";
@@ -84,15 +85,23 @@ export default class PalletItem extends Mixins(Translation) {
 	@Prop() readonly pallet!: PalletInformation;
 
 	get getPalletClass(): string {
-		if (this.pallet.palletStatus == PalletStatus.Running)
-			return "pallet-running";
-		if (this.pallet.palletStatus == PalletStatus.Ready)
-			return "pallet-ready";
-		if (this.pallet.palletStatus == PalletStatus.Error)
-			return "pallet-error";
-		if (this.pallet.palletStatus == PalletStatus.Done) return "pallet-done";
-		if (this.pallet.palletStatus == PalletStatus.Waiting)
-			return "pallet-waiting";
+		if (this.pallet.palletStatus == PalletStatus.Running) {
+			if (this.pallet.virtualPalletStatus == VirtualPalletStatus.Running)
+				return "pallet-running";
+			if (this.pallet.virtualPalletStatus == VirtualPalletStatus.Ready)
+				return "pallet-ready";
+			if (this.pallet.virtualPalletStatus == VirtualPalletStatus.Error)
+				return "pallet-error";
+			if (this.pallet.virtualPalletStatus == VirtualPalletStatus.Done)
+				return "pallet-done";
+		} else {
+			if (this.pallet.palletStatus == PalletStatus.Error) {
+				return "pallet-error";
+			}
+			if (this.pallet.palletStatus == PalletStatus.Ready) {
+				return "pallet-waiting";
+			}
+		}
 		return "";
 	}
 
@@ -102,13 +111,19 @@ export default class PalletItem extends Mixins(Translation) {
 
 	get isPalletDone(): boolean {
 		return (
-			this.pallet.palletStatus == PalletStatus.Done ||
-			this.pallet.palletStatus == PalletStatus.Error
+			this.pallet.virtualPalletStatus == VirtualPalletStatus.Done ||
+			this.pallet.virtualPalletStatus == VirtualPalletStatus.Error
 		);
 	}
 
 	get palletStatus(): string {
+		if (this.pallet.isVirtualPalletActive)
+			return this.getTranslatedValue(this.pallet.virtualPalletStatus);
 		return this.getTranslatedValue(this.pallet.palletStatus);
+	}
+
+	added() {
+		this.$emit("onAdded");
 	}
 }
 </script>

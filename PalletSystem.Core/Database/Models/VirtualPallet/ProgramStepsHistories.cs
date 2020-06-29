@@ -16,7 +16,7 @@ namespace PalletSystem.Core.Database.Models.VirtualPallet
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public int Step { get; set; }
-        public LocalDateTime DateTime { get; set; }
+        public Instant Instant { get; set; }
         public string OperationMask { get; set; } 
         public string WorkspaceSlot { get; set; } 
         public IEnumerable<ProgramStepResultItem> Results { get; set; }

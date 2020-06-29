@@ -31,21 +31,19 @@ namespace PalletSystem.DatabaseTest.PalletTests
         {
             using (var handler = new DatabaseHandler())
             {
-                var steps = new List<ProgramStepsInstructionSchemes>()
+                var steps = new List<ProgramStepsInstructions>()
                 {
-                    new ProgramStepsInstructionSchemes()
+                    new ProgramStepsInstructions()
                     {
                         OperationMask = "111",
                         Step = 1,
-                        Parameters = new List<string>() { "1.2" },
-                        WorkspaceSlot = "1"
+                        Parameter1 = "1.2"
                     },
-                    new ProgramStepsInstructionSchemes()
+                    new ProgramStepsInstructions()
                     {
                         OperationMask = "111",
                         Step = 2,
-                        Parameters = new List<string>() { "1.2" },
-                        WorkspaceSlot = "2"
+                        Parameter1 = "1.2"
                     }
                 }; 
                 var id = ObjectIdGenerator.Instance.GenerateId(handler.db.ProgramSchemes, new ProgramSchemes()).ToString();
@@ -53,7 +51,7 @@ namespace PalletSystem.DatabaseTest.PalletTests
                 {
                     Id = id,
                     Name = "Nazwa",
-                    ProgramStepsInstructionSchemes = steps
+                    ProgramStepsInstructions = steps
                 };
                 await handler.db.ProgramSchemes.InsertOneAsync(programToInsert);
                 return id;

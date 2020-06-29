@@ -10,7 +10,6 @@ namespace PalletSystem.Core.Database.Models.Pallet
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
-
         public string RFID { get; set; }
         public PalletStatus Status { get; set; }
         public bool IsDelete { get; set; }

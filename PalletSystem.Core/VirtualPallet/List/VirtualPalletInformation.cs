@@ -1,4 +1,5 @@
 ﻿using PalletSystem.Core.Pallet.Constant;
+using PalletSystem.Core.VirtualPallet.Constants;
 
 namespace PalletSystem.Core.VirtualPallet.List
 {
@@ -9,16 +10,16 @@ namespace PalletSystem.Core.VirtualPallet.List
         public string ProgramName { get; }
         public int StepsDone { get; }
         public int StepsTotal { get; }
-        public PalletStatus PalletStatus { get; }
+        public VirtualPalletStatus VirtualPalletStatus { get; }
 
-        public VirtualPalletInformation(string virtualPalletId, string rfid, string programName, int stepsDone, int stepsTotal, PalletStatus palletStatus)
+        public VirtualPalletInformation(string virtualPalletId, string rfid, string programName, int stepsDone, int stepsTotal, VirtualPalletStatus virtualPalletStatus)
         {
             VirtualPalletId = virtualPalletId;
             RFID = rfid;
             ProgramName = programName;
             StepsDone = stepsDone;
             StepsTotal = stepsTotal;
-            PalletStatus = palletStatus;
+            VirtualPalletStatus = virtualPalletStatus;
         }
     }
 }

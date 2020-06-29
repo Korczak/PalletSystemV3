@@ -11,7 +11,10 @@ import {
 	PalletsClient,
 	ProgramClient
 } from "./api-clients/ClientsGenerated";
-import { DeviceConnectorPrintStatusUpdateHubClient } from "./api-clients/hubClients";
+import {
+	PalletStatusHubClient,
+	VirtualPalletStatusHubClient
+} from "./api-clients/hubClients";
 
 import SaveButton from "@/components/SaveButton.vue";
 import DiscardButton from "@/components/DiscardButton.vue";
@@ -36,6 +39,7 @@ new Vue({
 		usersClient: new UsersClient(),
 		palletClient: new PalletsClient(),
 		programClient: new ProgramClient(),
-		updateConnectionHubClient: new DeviceConnectorPrintStatusUpdateHubClient()
+		updatePalletStatusHubClient: new PalletStatusHubClient(),
+		updateVirtualPalletStatusHubClient: new VirtualPalletStatusHubClient()
 	}
 }).$mount("#app");

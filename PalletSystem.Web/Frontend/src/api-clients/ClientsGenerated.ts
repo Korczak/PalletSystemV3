@@ -742,6 +742,8 @@ export class PalletInformation implements IPalletInformation {
     programName?: string | null;
     stepsDone!: number;
     stepsTotal!: number;
+    isVirtualPalletActive!: boolean;
+    virtualPalletStatus!: VirtualPalletStatus;
     palletStatus!: PalletStatus;
 
     constructor(data?: IPalletInformation) {
@@ -760,6 +762,8 @@ export class PalletInformation implements IPalletInformation {
             this.programName = _data["programName"] !== undefined ? _data["programName"] : <any>null;
             this.stepsDone = _data["stepsDone"] !== undefined ? _data["stepsDone"] : <any>null;
             this.stepsTotal = _data["stepsTotal"] !== undefined ? _data["stepsTotal"] : <any>null;
+            this.isVirtualPalletActive = _data["isVirtualPalletActive"] !== undefined ? _data["isVirtualPalletActive"] : <any>null;
+            this.virtualPalletStatus = _data["virtualPalletStatus"] !== undefined ? _data["virtualPalletStatus"] : <any>null;
             this.palletStatus = _data["palletStatus"] !== undefined ? _data["palletStatus"] : <any>null;
         }
     }
@@ -778,6 +782,8 @@ export class PalletInformation implements IPalletInformation {
         data["programName"] = this.programName !== undefined ? this.programName : <any>null;
         data["stepsDone"] = this.stepsDone !== undefined ? this.stepsDone : <any>null;
         data["stepsTotal"] = this.stepsTotal !== undefined ? this.stepsTotal : <any>null;
+        data["isVirtualPalletActive"] = this.isVirtualPalletActive !== undefined ? this.isVirtualPalletActive : <any>null;
+        data["virtualPalletStatus"] = this.virtualPalletStatus !== undefined ? this.virtualPalletStatus : <any>null;
         data["palletStatus"] = this.palletStatus !== undefined ? this.palletStatus : <any>null;
         return data; 
     }
@@ -789,14 +795,21 @@ export interface IPalletInformation {
     programName?: string | null;
     stepsDone: number;
     stepsTotal: number;
+    isVirtualPalletActive: boolean;
+    virtualPalletStatus: VirtualPalletStatus;
     palletStatus: PalletStatus;
+}
+
+export enum VirtualPalletStatus {
+    Ready = "Ready",
+    Running = "Running",
+    Error = "Error",
+    Done = "Done",
 }
 
 export enum PalletStatus {
     Ready = "Ready",
     Error = "Error",
-    Done = "Done",
-    Waiting = "Waiting",
     Running = "Running",
 }
 
@@ -863,7 +876,11 @@ export class ProgramInstruction implements IProgramInstruction {
     step!: number;
     machineMask?: string | null;
     command?: string | null;
-    parameters?: string[] | null;
+    parameter1?: string | null;
+    parameter2?: string | null;
+    parameter3?: string | null;
+    parameter4?: string | null;
+    parameter5?: string | null;
     workspaceSlot?: string | null;
 
     constructor(data?: IProgramInstruction) {
@@ -880,11 +897,11 @@ export class ProgramInstruction implements IProgramInstruction {
             this.step = _data["step"] !== undefined ? _data["step"] : <any>null;
             this.machineMask = _data["machineMask"] !== undefined ? _data["machineMask"] : <any>null;
             this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
-            if (Array.isArray(_data["parameters"])) {
-                this.parameters = [] as any;
-                for (let item of _data["parameters"])
-                    this.parameters!.push(item);
-            }
+            this.parameter1 = _data["parameter1"] !== undefined ? _data["parameter1"] : <any>null;
+            this.parameter2 = _data["parameter2"] !== undefined ? _data["parameter2"] : <any>null;
+            this.parameter3 = _data["parameter3"] !== undefined ? _data["parameter3"] : <any>null;
+            this.parameter4 = _data["parameter4"] !== undefined ? _data["parameter4"] : <any>null;
+            this.parameter5 = _data["parameter5"] !== undefined ? _data["parameter5"] : <any>null;
             this.workspaceSlot = _data["workspaceSlot"] !== undefined ? _data["workspaceSlot"] : <any>null;
         }
     }
@@ -901,11 +918,11 @@ export class ProgramInstruction implements IProgramInstruction {
         data["step"] = this.step !== undefined ? this.step : <any>null;
         data["machineMask"] = this.machineMask !== undefined ? this.machineMask : <any>null;
         data["command"] = this.command !== undefined ? this.command : <any>null;
-        if (Array.isArray(this.parameters)) {
-            data["parameters"] = [];
-            for (let item of this.parameters)
-                data["parameters"].push(item);
-        }
+        data["parameter1"] = this.parameter1 !== undefined ? this.parameter1 : <any>null;
+        data["parameter2"] = this.parameter2 !== undefined ? this.parameter2 : <any>null;
+        data["parameter3"] = this.parameter3 !== undefined ? this.parameter3 : <any>null;
+        data["parameter4"] = this.parameter4 !== undefined ? this.parameter4 : <any>null;
+        data["parameter5"] = this.parameter5 !== undefined ? this.parameter5 : <any>null;
         data["workspaceSlot"] = this.workspaceSlot !== undefined ? this.workspaceSlot : <any>null;
         return data; 
     }
@@ -915,7 +932,11 @@ export interface IProgramInstruction {
     step: number;
     machineMask?: string | null;
     command?: string | null;
-    parameters?: string[] | null;
+    parameter1?: string | null;
+    parameter2?: string | null;
+    parameter3?: string | null;
+    parameter4?: string | null;
+    parameter5?: string | null;
     workspaceSlot?: string | null;
 }
 

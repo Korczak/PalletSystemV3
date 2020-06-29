@@ -32,43 +32,6 @@
 							:pallet="item"
 						></pallet-item>
 					</v-row>
-
-					<!-- <v-data-table
-						class="dataTable"
-						:headers="headers"
-						:items="pallets"
-						hide-default-footer
-						show-select
-					>
-						<template v-slot:item.rfid="{ item }">
-							{{ item.rfid }}
-						</template>
-						<template v-slot:item.program="{ item }">
-							{{ item.programName }}
-						</template>
-						<template v-slot:item.steps="{ item }">
-							<span>
-								{{ item.stepsDone }} / {{ item.stepsTotal }}
-							</span>
-						</template>
-						<template v-slot:item.status="{ item }">
-							<span>
-								{{ item.palletStatus }}
-							</span>
-						</template>
-						<template v-slot:item.actions="{ item }">
-							<run-pallet-dialog
-								v-if="isPalletReady(item.palletStatus)"
-								@onAdded="loadData"
-								:palletRFID="item.rfid"
-								:palletId="item.id"
-							>
-							</run-pallet-dialog>
-							<v-btn v-else width="35" height="35" icon>
-								<v-icon x-large color="#90caf9">forward</v-icon>
-							</v-btn>
-						</template>
-					</v-data-table> -->
 				</div>
 			</v-container>
 		</v-row>
@@ -91,16 +54,32 @@ import { globalStore } from "@/main";
 import moment from "moment";
 import AddPalletDialog from "./AddPalletDialog.vue";
 import PalletItem from "./PalletItem.vue";
+import {
+	PalletStatusHubClient,
+	VirtualPalletStatusHubClient
+} from "@/api-clients/hubClients";
 
 @Component({ components: { AddPalletDialog, PalletItem } })
 export default class PalletMain extends Mixins(Translation) {
 	@Inject() readonly palletClient!: PalletsClient;
+	@Inject() readonly updatePalletStatusHubClient!: PalletStatusHubClient;
+	@Inject()
+	readonly updateVirtualPalletStatusHubClient!: VirtualPalletStatusHubClient;
 
 	searchText = "";
 
 	moment = moment;
 
 	pallets: PalletInformation[] = [];
+
+	destroyed() {
+		this.updatePalletStatusHubClient.StopConnections();
+		this.updateVirtualPalletStatusHubClient.StopConnections();
+	}
+	created() {
+		this.updatePalletStatusHubClient.OnUpdateStatus(this.loadData);
+		this.updateVirtualPalletStatusHubClient.OnUpdateStatus(this.loadData);
+	}
 
 	async mounted() {
 		await this.loadData();

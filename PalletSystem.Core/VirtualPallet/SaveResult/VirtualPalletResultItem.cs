@@ -1,11 +1,11 @@
-﻿namespace PalletSystem.Core.SteeringLogic.SaveResult
+﻿namespace PalletSystem.Core.VirtualPallet.SaveResult
 {
-    public class SteeringLogicResultItem
+    public class VirtualPalletResultItem
     {
         public float Value { get; }
         public int Status { get; }
 
-        public SteeringLogicResultItem(float value, int status)
+        public VirtualPalletResultItem(float value, int status)
         {
             Value = value;
             Status = status;

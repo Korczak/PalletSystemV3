@@ -110,7 +110,7 @@ export default class RunPalletDialog extends Mixins(Translation) {
 		let requestToSend = new PalletRunRequest(request);
 		console.log(requestToSend);
 		const result = await this.palletClient.runPallet(requestToSend);
-
+		console.log(result);
 		if (result == PalletRunResult.PalletRun) {
 			this.closeDialog();
 			this.$emit("onAdded");

@@ -2,7 +2,8 @@
 using PalletSystem.Core.Devices.ConnectConnector;
 using PalletSystem.Core.Devices.SyncConnector;
 using PalletSystem.Core.Devices.UpdateConnections;
-using PalletSystem.Core.Pallet.Run;
+using PalletSystem.Core.VirtualPallet.GetNextStep;
+using PalletSystem.Core.VirtualPallet.SaveResult;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -13,28 +14,40 @@ namespace PalletSystem.Web.PalletConnector
         private readonly ConnectConnectorService _connectConnector;
         private readonly UpdateConnectionsService _updateConnections;
         private readonly SyncConnectorService _syncConnector;
-        private readonly PalletRunService _runService;
+        private readonly VirtualPalletGetNextStepService _nextStepService;
+        private readonly VirtualPalletSaveResultService _saveResultService;
 
         public ConnectorController(
             ConnectConnectorService connectConnector,
             UpdateConnectionsService updateConnections,
             SyncConnectorService syncConnector,
-            PalletRunService runService)
+            VirtualPalletGetNextStepService nextStepService,
+            VirtualPalletSaveResultService saveResultService)
         {
             _connectConnector = connectConnector;
             _updateConnections = updateConnections;
             _syncConnector = syncConnector;
-            _runService = runService;
+            _nextStepService = nextStepService;
+            _saveResultService = saveResultService;
         }
 
-        //[HttpPost("api/pallet/run")]
-        //[ProducesResponseType(typeof(PalletRunResult), (int)HttpStatusCode.OK)]
-        //public async Task<IActionResult> RunPallet([FromBody] PalletRunRequest request)
-        //{
-        //    var result = await _runService.RunPallet(request);
+        [HttpGet("api/connector/pallet/{rfid}/next-step")]
+        [ProducesResponseType(typeof(VirtualPalletGetNextStepResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetNextStep(string rfid)
+        {
+            var result = await _nextStepService.GetNextStep(rfid);
 
-        //    return Ok(result);
-        //}
+            return Ok(result);
+        }
+
+        [HttpPost("api/connector/pallet/save-result")]
+        [ProducesResponseType(typeof(VirtualPalletGetNextStepResponse), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> SaveResult([FromBody] VirtualPalletSaveResultRequest request)
+        {
+            await _saveResultService.SaveResult(request);
+
+            return Ok();
+        }
 
         [HttpPost]
         [Route("/api/connector/sync")]

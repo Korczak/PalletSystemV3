@@ -1,4 +1,5 @@
 ﻿using PalletSystem.Core.Database.Models.ProgramScheme;
+using PalletSystem.Core.Database.Models.VirtualPallet;
 using PalletSystem.Core.Database.Settings;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,17 +15,20 @@ namespace PalletSystem.Core.Program.Add
                 await handler.StartTransaction();
                 try
                 {
-                    var programInstruction = new List<ProgramStepsInstructionSchemes>();
+                    var programInstruction = new List<ProgramStepsInstructions>();
 
                     foreach(var instruction in added.Instructions)
                     {
-                        programInstruction.Add(new ProgramStepsInstructionSchemes()
+                        programInstruction.Add(new ProgramStepsInstructions()
                         {
                             Command = instruction.Command,
                             OperationMask = instruction.MachineMask,
-                            Parameters = instruction.Parameters,
-                            Step = instruction.Step,
-                            WorkspaceSlot = instruction.WorkspaceSlot
+                            Parameter1 = instruction.Parameter1,
+                            Parameter2 = instruction.Parameter2,
+                            Parameter3 = instruction.Parameter3,
+                            Parameter4 = instruction.Parameter4,
+                            Parameter5 = instruction.Parameter5,
+                            Step = instruction.Step
                         });
                     }
 
@@ -32,7 +36,7 @@ namespace PalletSystem.Core.Program.Add
                     {
                         Description = added.Description,
                         Name = added.Name,
-                        ProgramStepsInstructionSchemes = programInstruction
+                        ProgramStepsInstructions = programInstruction
                     };
 
                     await handler.db.ProgramSchemes.InsertOneAsync(programToInsert);

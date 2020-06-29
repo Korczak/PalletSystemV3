@@ -1,10 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
-using PalletSystem.Core.Pallet.Constant;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using PalletSystem.Core.VirtualPallet.Constants;
 
 namespace PalletSystem.Core.Database.Models.VirtualPallet
 {
@@ -13,9 +10,12 @@ namespace PalletSystem.Core.Database.Models.VirtualPallet
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+
+        [BsonRepresentation(BsonType.ObjectId)]
         public string PalletId { get; set; }
+
         public Programs Program { get; set; }
-        public PalletStatus Status { get; set; }
+        public VirtualPalletStatus Status { get; set; }
         public bool IsActive { get; set; }
     }
 }

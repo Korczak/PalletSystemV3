@@ -36,6 +36,19 @@ namespace PalletSystem.Core.Pallet.Run
             }
         }
 
+        public async Task<IEnumerable<ProgramStepsInstructions>> GetProgramInstructions(string id)
+        {
+            using (var handler = new DatabaseHandler())
+            {
+                var steps = await handler.db.ProgramSchemes.AsQueryable()
+                    .Where(x => x.Id == id)
+                    .Select(x => x.ProgramStepsInstructions)
+                    .FirstOrDefaultAsync();
+
+                return steps;
+            }
+        }
+
         public async Task RunPallet(PalletRun pallet)
         {
             using (var handler = new DatabaseHandler())
@@ -48,9 +61,11 @@ namespace PalletSystem.Core.Pallet.Run
                         PalletId = pallet.PalletId,
                         Program = new Programs()
                         {
-                            Id = pallet.ProgramId
+                            Id = pallet.ProgramId,
+                            ActiveStep = 1,
+                            ProgramStepsInstructions = pallet.Instructions
                         },
-                        Status = Constant.PalletStatus.Running,
+                        Status = VirtualPallet.Constants.VirtualPalletStatus.Running,
                         IsActive = true
                     };
                     await handler.db.VirtualPallets.InsertOneAsync(palletToInsert);
