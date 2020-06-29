@@ -13,5 +13,6 @@ namespace PalletSystem.PLCConnector
         public int Port { get; set; }
         public short Rack { get; set; }
         public short Slot { get; set; }
+        public string Stations { get; set; }
     }
 }

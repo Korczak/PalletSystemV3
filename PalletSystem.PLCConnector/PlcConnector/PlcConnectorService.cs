@@ -1,30 +1,35 @@
 ﻿using PalletSystem.PLCConnector.PlcConnector.Models;
-using S7.Net;
 using Serilog;
+using Sharp7;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PalletSystem.PLCConnector.PlcConnector
 {
     public class PlcConnectorService : IConnectorService
     {
-        private readonly Plc _plc;
+        private readonly S7Client _client;
         private readonly Config _config;
-        public bool IsConnected => _plc.IsConnected;
+        public bool IsConnected => _client.Connected;
+        private readonly Station[] _stations;
 
         public PlcConnectorService(Config config)
         {
             _config = config;
-            _plc = new Plc(CpuType.S71200, config.Ip, config.Rack, config.Slot);
+            S7Client client = new S7Client();
+            _stations = config.Stations.Split(',').Select(x => new Station(int.Parse(x))).ToArray();
         }
 
         public async Task Connect(int numTries = 30)
         {
-            while (numTries > 0 && !_plc.IsConnected && !_plc.IsAvailable)
+            while (numTries > 0 && !_client.Connected)
             {
                 try
                 {
-                    await _plc.OpenAsync();
+                    int ret = _client.ConnectTo(_config.Ip, 0, 0);
+                    if (ret != 0) throw new Exception(_client.ErrorText(ret));
                 }
                 catch (Exception ex)
                 {
@@ -32,7 +37,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
                 }
             }
 
-            if (!_plc.IsConnected)
+            if (!_client.Connected)
             {
                 Log.Error("Could not connect to plc");
             }
@@ -40,35 +45,22 @@ namespace PalletSystem.PLCConnector.PlcConnector
             {
                 Log.Information("Plc is connected");
             }
-
-            if (!_plc.IsAvailable)
-            {
-                Log.Error("Plc is unavailable");
-            }
-            else
-            {
-                Log.Information("Plc is available");
-            }
         }
 
-        public async Task<PlcSourceData> PlcReadData()
+        void Start()
         {
-            
-            
-            var pcInformation = new PcModel();
-            var plcInformation = new PlcModel();
 
-            var readed = _plc.Read(DataType.DataBlock, 1, 0, VarType.Int, 1);
-            Log.Information("READ: " + readed);
-            //await _plc.ReadClassAsync(pcInformation, 1);
+        }
 
-            /*
-            await Task.WhenAll(
-                _plc.ReadClassAsync(pcInformation, 1),
-                _plc.ReadClassAsync(plcInformation, 1, 44));
-            */
 
-            return new PlcSourceData(pcInformation, plcInformation);
+        void Loop()
+        {
+            int index = 0;
+            while (true)
+            {
+                _stations[index].Processing(_client);
+                index = (index + 1) % _stations.Count();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using S7.Net;
+using System;
 
 namespace PalletSystem.PLCConnector.PlcConnector.Models
 {
@@ -16,6 +17,15 @@ namespace PalletSystem.PLCConnector.PlcConnector.Models
         public override string ToString()
         {
             return $"Data: [LiveCounter: {LiveCounter}, Order: {Order}, RFID: {RFID}, OperationMask: {OperationMask}, Status: {Status}]";
+        }
+
+        public static PlcModel ParseBuffer(byte[] buffor)
+        {
+             return new PlcModel()
+             {
+                 LiveCounter = Sharp7.S7.GetIntAt(buffor, 0),
+                 Order
+             }
         }
     }
 }

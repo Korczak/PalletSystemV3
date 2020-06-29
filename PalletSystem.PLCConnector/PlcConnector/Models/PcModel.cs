@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PalletSystem.PLCConnector.PlcConnector.Constants;
+using System;
 
 namespace PalletSystem.PLCConnector.PlcConnector.Models
 {
@@ -13,6 +14,13 @@ namespace PalletSystem.PLCConnector.PlcConnector.Models
         public override string ToString()
         {
             return $"Data: [LiveCounter: {LiveCounter}, Order: {Order}, RFID: {RFID}, OperationMask: {OperationMask}, Status: {Status}]";
+        }
+
+        public byte[] ToBuffor()
+        {
+            byte[] buff = new byte[TraceOffset.plcLiveCounter - TraceOffset.pcLiveCounter];
+            Sharp7.S7.SetIntAt(buff, (int)TraceOffset.plcLiveCounter, (short)LiveCounter);
+            return buff;
         }
     }
 }

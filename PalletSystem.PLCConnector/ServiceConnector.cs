@@ -27,12 +27,6 @@ namespace PalletSystem.PLCConnector
             _config = config;
             _webConnectorService = new WebConnectorService(connector, client, config);
             _plcConnectorService = new PlcConnectorService(config);
-            _timer = new System.Timers.Timer()
-            {
-                AutoReset = true,
-                Interval = 5000
-            };
-            _timer.Elapsed += SyncTimerTimeElapsed;
         }
 
         public void Start()
@@ -48,7 +42,7 @@ namespace PalletSystem.PLCConnector
             }
             else
             {
-                _timer.Start();
+                Task.Factory.StartNew(()=>Loop());
             }
         }
 
@@ -57,7 +51,7 @@ namespace PalletSystem.PLCConnector
             _timer.Stop();
         }
 
-        private void SyncTimerTimeElapsed(object sender, System.Timers.ElapsedEventArgs e)
+        private void Loop()
         {
             Log.Information("Reading from PLC");
             try
