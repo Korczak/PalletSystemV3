@@ -4,14 +4,14 @@ using System.Text;
 
 namespace PalletSystem.PLCConnector.PlcConnector.Constants
 {
-    public enum TraceOffset
+    public enum TraceOffset : int
     {
         pcLiveCounter = 0,
         pcOrder = pcLiveCounter + 2,
         pcRfid = pcOrder + 2,
         pcMask = pcRfid + 34,
-        pcCommand = pcMask + 2,
-        pcStatus = pcMask + 256,
+        pcCommand = pcMask + 4,
+        pcStatus = pcCommand + 256,
         plcLiveCounter = pcStatus + 2,
         plcOrder = plcLiveCounter + 2,
         plcRfid = plcLiveCounter + 4,

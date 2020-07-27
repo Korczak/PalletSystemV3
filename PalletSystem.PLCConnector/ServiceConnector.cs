@@ -32,6 +32,7 @@ namespace PalletSystem.PLCConnector
         public void Start()
         {
             var plcConnectTask = _plcConnectorService.Connect();
+            _plcConnectorService.Start();
             var webConnectTask = _webConnectorService.ConnectToServer();
 
             Task.WaitAll(plcConnectTask, webConnectTask);
@@ -53,11 +54,11 @@ namespace PalletSystem.PLCConnector
 
         private void Loop()
         {
-            Log.Information("Reading from PLC");
+            //Log.Information("Reading from PLC");
             try
             {
-                var results = _plcConnectorService.PlcReadData().GetAwaiter().GetResult();
-                Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}");
+                //var results = _plcConnectorService.PlcReadData().GetAwaiter().GetResult();
+                //Log.Information($"Readed from PLC: PC: {results.PcModel}, PLC: {results.PlcModel}");
             }
             catch(Exception ex)
             {

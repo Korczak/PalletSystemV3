@@ -1,5 +1,8 @@
-﻿using PalletSystem.PLCConnector.PlcConnector.Constants;
+﻿using PalletSystem.PLCConnector.Client;
+using PalletSystem.PLCConnector.PlcConnector.Constants;
 using PalletSystem.PLCConnector.PlcConnector.Models;
+using PalletSystem.PLCConnector.WebConnect;
+using S7.Net;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -12,7 +15,8 @@ namespace PalletSystem.PLCConnector.PlcConnector
         public int DB { get; private set; }
         public int LiveCounter { get; private set; }
         public StationState Order { get; private set; }
-        public PcModel Response { get; private set; }
+        public VirtualPalletGetNextStepResponse Response { get; private set; }
+        public ushort ResponseOrder { get; set; }
         public Station(int _db)
         {
             DB = _db;
@@ -26,32 +30,59 @@ namespace PalletSystem.PLCConnector.PlcConnector
             switch (Order)
             {
                 case StationState.Idle:
-                    if (order != 0)
                     {
-                        byte[] buffL = new byte[(int)TraceOffset.end - (int)TraceOffset.pcLiveCounter];
-                        client.DBRead(DB, (int)TraceOffset.pcLiveCounter, buffL.Length, buffL);
-                        if (order == 1)
+                        if (order != 0)
                         {
-                            Order = StationState.WaitForResponse;
-                            
-                            Task.Factory
-                                .StartNew(() => { Response = GetNextStep(PlcModel.ParseBuffer(buffL))})
-                                .ContinueWith(() =>
-                            {                                
-                                Order = StationState.ResponseReady;
-                            })
+                            byte[] buffL = new byte[(int)TraceOffset.end - (int)TraceOffset.plcLiveCounter];
+                            client.DBRead(DB, (int)TraceOffset.plcLiveCounter, buffL.Length, buffL);
+                            if (order == 1)
+                            {
+                                Order = StationState.WaitForResponse;
+
+                                Task.Factory
+                                    .StartNew(() => 
+                                    {    
+                                        GetNextStep(PlcModel.ParseBuffer(buffL));
+                                    });
+                            }
                         }
+                        ResponseOrder = 0;
+                        break;
+                    }
+                case StationState.WaitForResponse:
+                    {
+                        ResponseOrder = 0;
+                        break;
+                    }
+                case StationState.ResponseReady:
+                    {
+                        if(Response != null && Response.Result != VirtualPalletGetNextStepResult.VirtualPalletError)
+                        {
+
+                        }
+                        else
+                        {
+                            ResponseOrder = 11;
+                        }
+                        Order = StationState.WaitForIdle;
+                        break;
+                    }
+                case StationState.WaitForIdle:
+                    {
+                        if (order == 0)
+                            Order = StationState.Idle;
+                        break;
                     }
             }
-                    break;
-            }
+            Sharp7.S7.SetWordAt(buff, 2, ResponseOrder);
+            client.DBWrite(DB, (int)TraceOffset.pcLiveCounter, 4, buff);
 
+        }
         private void GetNextStep(PlcModel plcModel)
         {
-            throw new NotImplementedException();
-        }
-
-        client.DBWrite(DB, (int)TraceOffset.plcLiveCounter, 4, buff);
+            var client = new ConnectorClient(Program.GetConfig().WebApiUrl, new System.Net.Http.HttpClient());
+            Response = client.GetNextStepAsync(plcModel.RFID).GetAwaiter().GetResult();
+            Order = StationState.ResponseReady;
         }
     }
 }

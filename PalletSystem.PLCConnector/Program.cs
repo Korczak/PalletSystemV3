@@ -92,7 +92,7 @@ namespace PalletSystem.PLCConnector
                 });
             });
         }
-        private static Config GetConfig()
+        public static Config GetConfig()
         {
             var projectPath = AppDomain.CurrentDomain.BaseDirectory;
             var configPath = Path.Combine(projectPath, "appsettings.json");

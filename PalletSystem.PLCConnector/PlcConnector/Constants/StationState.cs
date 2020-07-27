@@ -7,6 +7,8 @@ namespace PalletSystem.PLCConnector.PlcConnector.Constants
     public enum StationState
     {
         Idle,
-        WaitForResponse
+        WaitForResponse,
+        ResponseReady,
+        WaitForIdle
     }
 }

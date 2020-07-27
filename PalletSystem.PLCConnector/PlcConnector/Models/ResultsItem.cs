@@ -5,5 +5,7 @@
         public int Id { get; set; }
         public float Value { get; set; }
         public int Status { get; set; }
+
+
     }
 }

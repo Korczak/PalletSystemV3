@@ -24,7 +24,9 @@ namespace PalletSystem.Core.VirtualPallet.GetNextStep
         {
             var palletInformation = await _access.GetPalletInformation(rfid);
 
-            if (palletInformation.Id == default || palletInformation.Status == VirtualPalletStatus.Error)
+            if (palletInformation == null ||
+                palletInformation.Id == default || 
+                palletInformation.Status == VirtualPalletStatus.Error)
                 return VirtualPalletGetNextStepResponse.Failure(VirtualPalletGetNextStepResult.VirtualPalletError);
 
             if (palletInformation.Status == VirtualPalletStatus.Done)

@@ -18,7 +18,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
         public PlcConnectorService(Config config)
         {
             _config = config;
-            S7Client client = new S7Client();
+            _client = new S7Client();
             _stations = config.Stations.Split(',').Select(x => new Station(int.Parse(x))).ToArray();
         }
 
@@ -47,9 +47,9 @@ namespace PalletSystem.PLCConnector.PlcConnector
             }
         }
 
-        void Start()
+        public void Start()
         {
-
+            Loop();
         }
 
 
