@@ -5,6 +5,7 @@ using PalletSystem.PLCConnector.WebConnect;
 using S7.Net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -58,7 +59,18 @@ namespace PalletSystem.PLCConnector.PlcConnector
                     {
                         if(Response != null && Response.Result != VirtualPalletGetNextStepResult.VirtualPalletError)
                         {
+                            var response = new PcModel()
+                            {
+                                LiveCounter = LiveCounter,
+                                Order = (int)StationState.WaitForIdle,
+                                Command = Response.NextStep.Command,
+                                OperationMask = Convert.ToUInt32(Response.NextStep.OperationMask, 2),
+                                RFID = "12",
+                                Status = (int)Response.NextStep.Status
+                            };
 
+                            var responseBuff = response.ToBuffor();
+                            client.DBWrite(DB, (int)TraceOffset.plcLiveCounter, responseBuff.Length, responseBuff);
                         }
                         else
                         {

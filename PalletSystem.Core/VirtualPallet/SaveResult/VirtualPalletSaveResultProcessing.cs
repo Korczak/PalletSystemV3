@@ -22,7 +22,7 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
             }
             foreach (var result in request.Results)
             {
-                if (result.Status != 0)
+                if (result.Status != 1)
                 {
                     programStatus = ProgramStatus.Error;
                     palletStatus = VirtualPalletStatus.Error;
