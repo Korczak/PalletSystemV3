@@ -15,7 +15,7 @@ namespace PalletSystem.Web.Configuration
 {
     public class WebStartup : IStartupStep
     {
-        const string DEVELOPMENT_CLIENT_URL = "http://localhost:8081/";
+        const string DEVELOPMENT_CLIENT_URL = "http://localhost:8080/";
         private readonly IApplicationBuilder _app;
         private readonly IWebHostEnvironment _env;
 
