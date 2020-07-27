@@ -27,8 +27,8 @@ namespace PalletSystem.Core.Pallet.Finish
 
             if (palletSource == default)
                 return;
-            if (palletSource.Status == Constant.PalletStatus.Running)
-                return;
+            //if (palletSource.Status == Constant.PalletStatus.Running)
+            //    return;
 
             await _access.FinishPallet(new PalletFinished(request.PalletId, request.RFID));
         }

@@ -40,12 +40,19 @@
 									:palletRFID="pallet.rfid"
 									:palletId="pallet.id"
 								></run-pallet-dialog>
-								<reset-pallet-dialog
+								<v-btn
 									v-if="isPalletDone"
-									@onAdded="added()"
-									:palletRFID="pallet.rfid"
-									:palletId="pallet.id"
-								></reset-pallet-dialog>
+									width="80"
+									height="80"
+									icon
+									@click="resetPallet()"
+								>
+									<v-icon
+										style="font-size: 80px;"
+										color="#90caf9"
+										>settings_backup_restore</v-icon
+									>
+								</v-btn>
 							</v-layout>
 						</v-col>
 					</v-row>
@@ -72,14 +79,18 @@ import {
 	PalletsClient,
 	PalletInformation,
 	PalletStatus,
-	VirtualPalletStatus
+	VirtualPalletStatus,
+	PalletFinishRequest,
+	IPalletFinishRequest
 } from "../api-clients/ClientsGenerated";
 import { globalStore } from "@/main";
 import moment from "moment";
 import RunPalletDialog from "./RunPalletDialog.vue";
 import SettingsPalletDialog from "./SettingsPalletDialog.vue";
 
-@Component({ components: { SettingsPalletDialog, RunPalletDialog } })
+@Component({
+	components: { SettingsPalletDialog, RunPalletDialog }
+})
 export default class PalletItem extends Mixins(Translation) {
 	@Inject() readonly palletClient!: PalletsClient;
 	@Prop() readonly pallet!: PalletInformation;
@@ -124,6 +135,18 @@ export default class PalletItem extends Mixins(Translation) {
 
 	added() {
 		this.$emit("onAdded");
+	}
+
+	async resetPallet() {
+		let request: IPalletFinishRequest = {
+			palletId: this.pallet.id,
+			rfid: this.pallet.rfid
+		};
+
+		let requestToSend = new PalletFinishRequest(request);
+		await this.palletClient.finishPallet(requestToSend);
+		this.pallet.virtualPalletStatus = VirtualPalletStatus.Ready;
+		this.pallet.palletStatus = PalletStatus.Ready;
 	}
 }
 </script>
