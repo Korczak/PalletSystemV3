@@ -41,6 +41,7 @@
 									:palletId="pallet.id"
 								></run-pallet-dialog>
 								<v-btn
+									v-if="isPalletDone"
 									width="80"
 									height="80"
 									icon
@@ -145,6 +146,7 @@ export default class PalletItem extends Mixins(Translation) {
 		let requestToSend = new PalletFinishRequest(request);
 		await this.palletClient.finishPallet(requestToSend);
 		this.pallet.virtualPalletStatus = VirtualPalletStatus.Ready;
+		this.pallet.palletStatus = PalletStatus.Ready;
 	}
 }
 </script>
