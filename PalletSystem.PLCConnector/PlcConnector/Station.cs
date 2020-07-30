@@ -28,6 +28,8 @@ namespace PalletSystem.PLCConnector.PlcConnector
             client.DBRead(DB, (int)TraceOffset.plcLiveCounter, 4, buff);
             LiveCounter = Sharp7.S7.GetIntAt(buff, 0);
             var order = Sharp7.S7.GetIntAt(buff, 2);
+            bool autoResponse = true;
+
             switch (Order)
             {
                 case StationState.Idle:
@@ -62,15 +64,17 @@ namespace PalletSystem.PLCConnector.PlcConnector
                             var response = new PcModel()
                             {
                                 LiveCounter = LiveCounter,
-                                Order = (int)StationState.WaitForIdle,
+                                Order = 1,
                                 Command = Response.NextStep.Command,
                                 OperationMask = Convert.ToUInt32(Response.NextStep.OperationMask, 2),
-                                RFID = "12",
+                                RFID = "123",
                                 Status = (int)Response.NextStep.Status
                             };
 
                             var responseBuff = response.ToBuffor();
-                            client.DBWrite(DB, (int)TraceOffset.plcLiveCounter, responseBuff.Length, responseBuff);
+                            autoResponse = false;
+                            client.DBWrite(DB, (int)TraceOffset.pcLiveCounter, responseBuff.Length, responseBuff);
+                            ResponseOrder = 1;
                         }
                         else
                         {
@@ -86,9 +90,11 @@ namespace PalletSystem.PLCConnector.PlcConnector
                         break;
                     }
             }
-            Sharp7.S7.SetWordAt(buff, 2, ResponseOrder);
-            client.DBWrite(DB, (int)TraceOffset.pcLiveCounter, 4, buff);
-
+            if (autoResponse)
+            {
+                Sharp7.S7.SetWordAt(buff, 2, ResponseOrder);
+                client.DBWrite(DB, (int)TraceOffset.pcLiveCounter, 4, buff);
+            }
         }
         private void GetNextStep(PlcModel plcModel)
         {
