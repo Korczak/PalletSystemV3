@@ -33,7 +33,7 @@ namespace PalletSystem.Core.VirtualPallet.GetNextStep
                 return VirtualPalletGetNextStepResponse.Failure(VirtualPalletGetNextStepResult.ProgramIsDone);
 
             var nextStep = await _access.GetNextStep(rfid);
-            return VirtualPalletGetNextStepResponse.Success(nextStep);
+            return VirtualPalletGetNextStepResponse.Success(nextStep, rfid);
         }
     }
 }

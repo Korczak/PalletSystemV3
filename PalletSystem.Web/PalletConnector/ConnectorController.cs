@@ -41,12 +41,12 @@ namespace PalletSystem.Web.PalletConnector
         }
 
         [HttpPost("api/connector/pallet/save-result")]
-        [ProducesResponseType(typeof(VirtualPalletGetNextStepResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(VirtualPalletSaveResult), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> SaveResult([FromBody] VirtualPalletSaveResultRequest request)
         {
-            await _saveResultService.SaveResult(request);
+            var result = await _saveResultService.SaveResult(request);
 
-            return Ok();
+            return Ok(result);
         }
 
         [HttpPost]

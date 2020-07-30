@@ -17,8 +17,8 @@ namespace PalletSystem.DatabaseTest.ProgramTests
             var service = new ProgramAddService(new ProgramAddAccess());
             var programInstructions = new List<ProgramInstruction>()
             {
-                new ProgramInstruction(1, "1111", "Command", "1","2","3","4","5", "1"),
-                new ProgramInstruction(2, "1111", "Command", "1","2","3","4","5", "2")
+                new ProgramInstruction(1, 1111, "Command", "1","2","3","4","5", 1),
+                new ProgramInstruction(2, 111, "Command", "1","2","3","4","5", 2)
             };
             await service.AddProgram(new ProgramAddRequest(programName, null, programInstructions));
 

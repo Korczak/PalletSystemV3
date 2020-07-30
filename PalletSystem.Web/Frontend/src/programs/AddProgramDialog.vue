@@ -107,6 +107,7 @@
 																v-model="
 																	item.command
 																"
+																type="number"
 																required
 																:rules="[
 																	v =>

@@ -874,14 +874,14 @@ export interface IProgramAddRequest {
 
 export class ProgramInstruction implements IProgramInstruction {
     step!: number;
-    machineMask?: string | null;
+    machineMask!: number;
     command?: string | null;
     parameter1?: string | null;
     parameter2?: string | null;
     parameter3?: string | null;
     parameter4?: string | null;
     parameter5?: string | null;
-    workspaceSlot?: string | null;
+    workspaceSlot!: number;
 
     constructor(data?: IProgramInstruction) {
         if (data) {
@@ -930,14 +930,14 @@ export class ProgramInstruction implements IProgramInstruction {
 
 export interface IProgramInstruction {
     step: number;
-    machineMask?: string | null;
+    machineMask: number;
     command?: string | null;
     parameter1?: string | null;
     parameter2?: string | null;
     parameter3?: string | null;
     parameter4?: string | null;
     parameter5?: string | null;
-    workspaceSlot?: string | null;
+    workspaceSlot: number;
 }
 
 export class ProgramInformation implements IProgramInformation {

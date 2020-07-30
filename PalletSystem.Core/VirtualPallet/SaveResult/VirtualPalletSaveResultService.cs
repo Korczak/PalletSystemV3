@@ -19,25 +19,27 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
             _clock = clock;
         }
 
-        public Task SaveResult(VirtualPalletSaveResultRequest request)
+        public Task<VirtualPalletSaveResult> SaveResult(VirtualPalletSaveResultRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             return InternalSaveResult(request);
         }
 
-        private async Task InternalSaveResult(VirtualPalletSaveResultRequest request)
+        private async Task<VirtualPalletSaveResult> InternalSaveResult(VirtualPalletSaveResultRequest request)
         {
             var virtualPalletSource = await _access.GetVirtualPalletSource(request.RFID);
 
             if (virtualPalletSource == null || virtualPalletSource.Id == default)
             {
-                return;
+                return VirtualPalletSaveResult.PalletNotExists;
             }
 
             var processing = new VirtualPalletSaveResultProcessing(virtualPalletSource, request, _clock);
             await _statusHub.ActualVirtualStatusUpdate(processing.Saved.VirtualPalletStatus);
             await _access.SaveResults(processing.Saved);
+
+            return VirtualPalletSaveResult.ResultSaved;
         }
     }
 }

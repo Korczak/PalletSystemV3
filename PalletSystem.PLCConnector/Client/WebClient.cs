@@ -118,14 +118,14 @@ namespace PalletSystem.PLCConnector.Client
         }
     
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task<VirtualPalletGetNextStepResponse> SaveResultAsync(VirtualPalletSaveResultRequest request)
+        public System.Threading.Tasks.Task<VirtualPalletSaveResult> SaveResultAsync(VirtualPalletSaveResultRequest request)
         {
             return SaveResultAsync(request, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task<VirtualPalletGetNextStepResponse> SaveResultAsync(VirtualPalletSaveResultRequest request, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<VirtualPalletSaveResult> SaveResultAsync(VirtualPalletSaveResultRequest request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
                 throw new System.ArgumentNullException("request");
@@ -164,7 +164,7 @@ namespace PalletSystem.PLCConnector.Client
                         var status_ = ((int)response_.StatusCode).ToString();
                         if (status_ == "200") 
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<VirtualPalletGetNextStepResponse>(response_, headers_).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<VirtualPalletSaveResult>(response_, headers_).ConfigureAwait(false);
                             return objectResponse_.Object;
                         }
                         else
@@ -174,7 +174,7 @@ namespace PalletSystem.PLCConnector.Client
                             throw new ApiException("The HTTP status code of the response was not expected (" + (int)response_.StatusCode + ").", (int)response_.StatusCode, responseData_, headers_, null);
                         }
             
-                        return default(VirtualPalletGetNextStepResponse);
+                        return default(VirtualPalletSaveResult);
                     }
                     finally
                     {
@@ -500,6 +500,9 @@ namespace PalletSystem.PLCConnector.Client
         [Newtonsoft.Json.JsonProperty("nextStep", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public NextStepInformation NextStep { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("rfid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Rfid { get; set; }
+    
     
     }
     
@@ -520,8 +523,8 @@ namespace PalletSystem.PLCConnector.Client
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class NextStepInformation 
     {
-        [Newtonsoft.Json.JsonProperty("operationMask", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string OperationMask { get; set; }
+        [Newtonsoft.Json.JsonProperty("operationMask", Required = Newtonsoft.Json.Required.Always)]
+        public int OperationMask { get; set; }
     
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         [System.ComponentModel.DataAnnotations.Required(AllowEmptyStrings = true)]
@@ -567,16 +570,27 @@ namespace PalletSystem.PLCConnector.Client
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
+    public enum VirtualPalletSaveResult
+    {
+        [System.Runtime.Serialization.EnumMember(Value = @"ResultSaved")]
+        ResultSaved = 0,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"PalletNotExists")]
+        PalletNotExists = 1,
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class VirtualPalletSaveResultRequest 
     {
         [Newtonsoft.Json.JsonProperty("rfid", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Rfid { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("workspaceSlot", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string WorkspaceSlot { get; set; }
+        [Newtonsoft.Json.JsonProperty("workspaceSlot", Required = Newtonsoft.Json.Required.Always)]
+        public int WorkspaceSlot { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("operationMask", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string OperationMask { get; set; }
+        [Newtonsoft.Json.JsonProperty("operationMask", Required = Newtonsoft.Json.Required.Always)]
+        public int OperationMask { get; set; }
     
         [Newtonsoft.Json.JsonProperty("results", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<VirtualPalletResultItem> Results { get; set; }
