@@ -2,11 +2,13 @@
 {
     public class VirtualPalletResultItem
     {
+        public int Id { get; }
         public float Value { get; }
         public int Status { get; }
 
-        public VirtualPalletResultItem(float value, int status)
+        public VirtualPalletResultItem(int id, float value, int status)
         {
+            Id = id;
             Value = value;
             Status = status;
         }

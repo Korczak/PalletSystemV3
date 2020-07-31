@@ -9,7 +9,7 @@ namespace PalletSystem.PLCConnector.PlcConnector.Models
         public int LiveCounter { get; set; }
         public int Order { get; set; }
         public string RFID { get; set; }
-        public ulong OperationMask { get; set; }
+        public uint OperationMask { get; set; }
         public int Status { get; set; }
         public int WorkspaceSlot { get; set; }
         public ResultsItem[] Results { get; set; } = new ResultsItem[8];
@@ -27,15 +27,16 @@ namespace PalletSystem.PLCConnector.PlcConnector.Models
                 LiveCounter = Sharp7.S7.GetIntAt(buffor, 0),
                 Order = Sharp7.S7.GetIntAt(buffor, 2),
                 RFID = Sharp7.S7.GetCharsAt(buffor, 4, 33).Trim(),
-                OperationMask = Sharp7.S7.GetULIntAt(buffor, 38),
+                OperationMask = Sharp7.S7.GetDWordAt(buffor, 38),
                 Status = Sharp7.S7.GetIntAt(buffor, 42),
                 WorkspaceSlot = Sharp7.S7.GetIntAt(buffor, 44),
                 Results = Enumerable.Range(0, 8).Select(x => new ResultsItem()
                 {
-                    Id = Sharp7.S7.GetIntAt(buffor, 46 + x * 6),
-                    Value = Sharp7.S7.GetIntAt(buffor, 48 + x * 6)
+                    Id = Sharp7.S7.GetIntAt(buffor, 46 + x * 8),
+                    Value = Sharp7.S7.GetRealAt(buffor, 48 + x * 8),
+                    Status = Sharp7.S7.GetIntAt(buffor, 52 + x * 8)
                 }).ToArray(),
-                Message = Sharp7.S7.GetStringAt(buffor, 94).Trim()
+                Message = Sharp7.S7.GetStringAt(buffor, 110).Trim()
             };
         }
     }

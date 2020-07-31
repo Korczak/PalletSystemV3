@@ -134,7 +134,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
                         });
                     currentOperation = CurrentOperation.GetNextStep;
                 }
-                else if(order == 2)
+                else if (order == 2)
                 {
                     Order = StationState.WaitForResponse;
 
@@ -151,10 +151,11 @@ namespace PalletSystem.PLCConnector.PlcConnector
         {
             var client = new ConnectorClient(Program.GetConfig().WebApiUrl, new System.Net.Http.HttpClient());
             var results = new List<VirtualPalletResultItem>();
-            foreach(var result in plcModel.Results)
+            foreach (var result in plcModel.Results)
             {
                 results.Add(new VirtualPalletResultItem()
                 {
+                    
                     Status = result.Status,
                     Value = result.Value
                 });
@@ -166,7 +167,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
                 Rfid = plcModel.RFID,
                 WorkspaceSlot = plcModel.WorkspaceSlot
             };
-            
+
             SaveResultResponse = client.SaveResultAsync(request).GetAwaiter().GetResult();
             Order = StationState.ResponseReady;
         }
@@ -175,9 +176,15 @@ namespace PalletSystem.PLCConnector.PlcConnector
         {
             var client = new ConnectorClient(Program.GetConfig().WebApiUrl, new System.Net.Http.HttpClient());
             var response = client.GetNextStepAsync(plcModel.RFID).GetAwaiter().GetResult();
-
-            var operationMask = ((int)plcModel.OperationMask) & (1 << response.NextStep.OperationMask);
-            response.NextStep.OperationMask = operationMask;
+            if (response.NextStep.OperationMask > 0)
+            {
+                var operationMask = ((int)plcModel.OperationMask) & (1 << (response.NextStep.OperationMask - 1));
+                response.NextStep.OperationMask = operationMask;
+            }
+            else
+            {
+                response.NextStep.OperationMask = 0;
+            }
             NextStepResponse = response;
 
             Order = StationState.ResponseReady;

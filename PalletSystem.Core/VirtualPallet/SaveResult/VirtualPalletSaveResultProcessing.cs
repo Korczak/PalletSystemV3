@@ -15,18 +15,16 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
         {
             var programStatus = ProgramStatus.Running;
             var palletStatus = VirtualPalletStatus.Running;
+            if (request.Status != 1)
+            {
+                programStatus = ProgramStatus.Error;
+                palletStatus = VirtualPalletStatus.Error;
+            }
+
             if (source.ActualStep >= source.MaximumNumberOfSteps)
             {
                 programStatus = ProgramStatus.Done;
                 palletStatus = VirtualPalletStatus.Done;
-            }
-            foreach (var result in request.Results)
-            {
-                if (result.Status != 1)
-                {
-                    programStatus = ProgramStatus.Error;
-                    palletStatus = VirtualPalletStatus.Error;
-                }
             }
 
             var currentInstant = clock.GetCurrentInstant();
