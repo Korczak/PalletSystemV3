@@ -94,6 +94,9 @@
 																v-model="
 																	item.machineMask
 																"
+																type="number"
+																max="5"
+																min="0"
 																required
 																:rules="[
 																	v =>
@@ -107,7 +110,6 @@
 																v-model="
 																	item.command
 																"
-																type="number"
 																required
 																:rules="[
 																	v =>

@@ -32,6 +32,14 @@ namespace PalletSystem.Core.Program.Add
                         });
                     }
 
+                    programInstruction.Add(new ProgramStepsInstructions()
+                    {
+                        Command = "",
+                        OperationMask = 5,
+                        Step = programInstruction.Count + 1
+                    });
+
+
                     var programToInsert = new ProgramSchemes()
                     {
                         Description = added.Description,
