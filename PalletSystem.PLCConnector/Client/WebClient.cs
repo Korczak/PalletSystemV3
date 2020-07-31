@@ -592,6 +592,9 @@ namespace PalletSystem.PLCConnector.Client
         [Newtonsoft.Json.JsonProperty("operationMask", Required = Newtonsoft.Json.Required.Always)]
         public int OperationMask { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
+        public int Status { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("results", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<VirtualPalletResultItem> Results { get; set; }
     
@@ -601,6 +604,9 @@ namespace PalletSystem.PLCConnector.Client
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.1.11.0 (Newtonsoft.Json v12.0.0.0)")]
     public partial class VirtualPalletResultItem 
     {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Always)]
+        public int Id { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Always)]
         public float Value { get; set; }
     
