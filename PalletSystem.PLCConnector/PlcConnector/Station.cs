@@ -155,7 +155,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
             {
                 results.Add(new VirtualPalletResultItem()
                 {
-                    
+                    Id = result.Id,
                     Status = result.Status,
                     Value = result.Value
                 });
@@ -164,6 +164,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
             {
                 OperationMask = (int)plcModel.OperationMask,
                 Results = results,
+                Status = plcModel.Status,
                 Rfid = plcModel.RFID,
                 WorkspaceSlot = plcModel.WorkspaceSlot
             };
