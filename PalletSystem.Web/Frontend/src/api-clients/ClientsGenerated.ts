@@ -333,6 +333,43 @@ export class PalletsClient {
         }
         return Promise.resolve<PalletInformation[]>(<any>null);
     }
+
+    getVirtualPalletDetails(virtualPalletId: string): Promise<VirtualPalletDetails> {
+        let url_ = this.baseUrl + "/api/virtualPallet/{virtualPalletId}";
+        if (virtualPalletId === undefined || virtualPalletId === null)
+            throw new Error("The parameter 'virtualPalletId' must be defined.");
+        url_ = url_.replace("{virtualPalletId}", encodeURIComponent("" + virtualPalletId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetVirtualPalletDetails(_response);
+        });
+    }
+
+    protected processGetVirtualPalletDetails(response: Response): Promise<VirtualPalletDetails> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = VirtualPalletDetails.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<VirtualPalletDetails>(<any>null);
+    }
 }
 
 export class ProgramClient {
@@ -415,6 +452,43 @@ export class ProgramClient {
             });
         }
         return Promise.resolve<ProgramInformation[]>(<any>null);
+    }
+
+    getProgramDetails(programId: string): Promise<ProgramDetails> {
+        let url_ = this.baseUrl + "/api/program/{programId}";
+        if (programId === undefined || programId === null)
+            throw new Error("The parameter 'programId' must be defined.");
+        url_ = url_.replace("{programId}", encodeURIComponent("" + programId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processGetProgramDetails(_response);
+        });
+    }
+
+    protected processGetProgramDetails(response: Response): Promise<ProgramDetails> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = ProgramDetails.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<ProgramDetails>(<any>null);
     }
 }
 
@@ -738,6 +812,7 @@ export interface IPalletAddRequest {
 
 export class PalletInformation implements IPalletInformation {
     id?: string | null;
+    virtualPalletId?: string | null;
     rfid?: string | null;
     programName?: string | null;
     stepsDone!: number;
@@ -758,6 +833,7 @@ export class PalletInformation implements IPalletInformation {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"] !== undefined ? _data["id"] : <any>null;
+            this.virtualPalletId = _data["virtualPalletId"] !== undefined ? _data["virtualPalletId"] : <any>null;
             this.rfid = _data["rfid"] !== undefined ? _data["rfid"] : <any>null;
             this.programName = _data["programName"] !== undefined ? _data["programName"] : <any>null;
             this.stepsDone = _data["stepsDone"] !== undefined ? _data["stepsDone"] : <any>null;
@@ -778,6 +854,7 @@ export class PalletInformation implements IPalletInformation {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id !== undefined ? this.id : <any>null;
+        data["virtualPalletId"] = this.virtualPalletId !== undefined ? this.virtualPalletId : <any>null;
         data["rfid"] = this.rfid !== undefined ? this.rfid : <any>null;
         data["programName"] = this.programName !== undefined ? this.programName : <any>null;
         data["stepsDone"] = this.stepsDone !== undefined ? this.stepsDone : <any>null;
@@ -791,6 +868,7 @@ export class PalletInformation implements IPalletInformation {
 
 export interface IPalletInformation {
     id?: string | null;
+    virtualPalletId?: string | null;
     rfid?: string | null;
     programName?: string | null;
     stepsDone: number;
@@ -811,6 +889,235 @@ export enum PalletStatus {
     Ready = "Ready",
     Error = "Error",
     Running = "Running",
+}
+
+export class VirtualPalletDetails implements IVirtualPalletDetails {
+    virtualPalletId?: string | null;
+    virtualPalletProgram?: VirtualPalletProgram | null;
+    palletStatus!: VirtualPalletStatus;
+
+    constructor(data?: IVirtualPalletDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            this.virtualPalletProgram = data.virtualPalletProgram && !(<any>data.virtualPalletProgram).toJSON ? new VirtualPalletProgram(data.virtualPalletProgram) : <VirtualPalletProgram>this.virtualPalletProgram; 
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.virtualPalletId = _data["virtualPalletId"] !== undefined ? _data["virtualPalletId"] : <any>null;
+            this.virtualPalletProgram = _data["virtualPalletProgram"] ? VirtualPalletProgram.fromJS(_data["virtualPalletProgram"]) : <any>null;
+            this.palletStatus = _data["palletStatus"] !== undefined ? _data["palletStatus"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): VirtualPalletDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new VirtualPalletDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["virtualPalletId"] = this.virtualPalletId !== undefined ? this.virtualPalletId : <any>null;
+        data["virtualPalletProgram"] = this.virtualPalletProgram ? this.virtualPalletProgram.toJSON() : <any>null;
+        data["palletStatus"] = this.palletStatus !== undefined ? this.palletStatus : <any>null;
+        return data; 
+    }
+}
+
+export interface IVirtualPalletDetails {
+    virtualPalletId?: string | null;
+    virtualPalletProgram?: IVirtualPalletProgram | null;
+    palletStatus: VirtualPalletStatus;
+}
+
+export class VirtualPalletProgram implements IVirtualPalletProgram {
+    programName?: string | null;
+    stepsDone!: number;
+    stepsTotal!: number;
+    steps?: VirtualPalletProgramStep[] | null;
+
+    constructor(data?: IVirtualPalletProgram) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.steps) {
+                this.steps = [];
+                for (let i = 0; i < data.steps.length; i++) {
+                    let item = data.steps[i];
+                    this.steps[i] = item && !(<any>item).toJSON ? new VirtualPalletProgramStep(item) : <VirtualPalletProgramStep>item;
+                }
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.programName = _data["programName"] !== undefined ? _data["programName"] : <any>null;
+            this.stepsDone = _data["stepsDone"] !== undefined ? _data["stepsDone"] : <any>null;
+            this.stepsTotal = _data["stepsTotal"] !== undefined ? _data["stepsTotal"] : <any>null;
+            if (Array.isArray(_data["steps"])) {
+                this.steps = [] as any;
+                for (let item of _data["steps"])
+                    this.steps!.push(VirtualPalletProgramStep.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): VirtualPalletProgram {
+        data = typeof data === 'object' ? data : {};
+        let result = new VirtualPalletProgram();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["programName"] = this.programName !== undefined ? this.programName : <any>null;
+        data["stepsDone"] = this.stepsDone !== undefined ? this.stepsDone : <any>null;
+        data["stepsTotal"] = this.stepsTotal !== undefined ? this.stepsTotal : <any>null;
+        if (Array.isArray(this.steps)) {
+            data["steps"] = [];
+            for (let item of this.steps)
+                data["steps"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IVirtualPalletProgram {
+    programName?: string | null;
+    stepsDone: number;
+    stepsTotal: number;
+    steps?: IVirtualPalletProgramStep[] | null;
+}
+
+export class VirtualPalletProgramStep implements IVirtualPalletProgramStep {
+    step!: number;
+    instant!: string;
+    operationMask!: number;
+    workspaceSlot!: number;
+    results?: VirtualPalletProgramStepResult[] | null;
+    status!: ProgramStatus;
+
+    constructor(data?: IVirtualPalletProgramStep) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.results) {
+                this.results = [];
+                for (let i = 0; i < data.results.length; i++) {
+                    let item = data.results[i];
+                    this.results[i] = item && !(<any>item).toJSON ? new VirtualPalletProgramStepResult(item) : <VirtualPalletProgramStepResult>item;
+                }
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.step = _data["step"] !== undefined ? _data["step"] : <any>null;
+            this.instant = _data["instant"] !== undefined ? _data["instant"] : <any>null;
+            this.operationMask = _data["operationMask"] !== undefined ? _data["operationMask"] : <any>null;
+            this.workspaceSlot = _data["workspaceSlot"] !== undefined ? _data["workspaceSlot"] : <any>null;
+            if (Array.isArray(_data["results"])) {
+                this.results = [] as any;
+                for (let item of _data["results"])
+                    this.results!.push(VirtualPalletProgramStepResult.fromJS(item));
+            }
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): VirtualPalletProgramStep {
+        data = typeof data === 'object' ? data : {};
+        let result = new VirtualPalletProgramStep();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["step"] = this.step !== undefined ? this.step : <any>null;
+        data["instant"] = this.instant !== undefined ? this.instant : <any>null;
+        data["operationMask"] = this.operationMask !== undefined ? this.operationMask : <any>null;
+        data["workspaceSlot"] = this.workspaceSlot !== undefined ? this.workspaceSlot : <any>null;
+        if (Array.isArray(this.results)) {
+            data["results"] = [];
+            for (let item of this.results)
+                data["results"].push(item.toJSON());
+        }
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        return data; 
+    }
+}
+
+export interface IVirtualPalletProgramStep {
+    step: number;
+    instant: string;
+    operationMask: number;
+    workspaceSlot: number;
+    results?: IVirtualPalletProgramStepResult[] | null;
+    status: ProgramStatus;
+}
+
+export class VirtualPalletProgramStepResult implements IVirtualPalletProgramStepResult {
+    index!: number;
+    value!: number;
+    status!: number;
+
+    constructor(data?: IVirtualPalletProgramStepResult) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.index = _data["index"] !== undefined ? _data["index"] : <any>null;
+            this.value = _data["value"] !== undefined ? _data["value"] : <any>null;
+            this.status = _data["status"] !== undefined ? _data["status"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): VirtualPalletProgramStepResult {
+        data = typeof data === 'object' ? data : {};
+        let result = new VirtualPalletProgramStepResult();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["index"] = this.index !== undefined ? this.index : <any>null;
+        data["value"] = this.value !== undefined ? this.value : <any>null;
+        data["status"] = this.status !== undefined ? this.status : <any>null;
+        return data; 
+    }
+}
+
+export interface IVirtualPalletProgramStepResult {
+    index: number;
+    value: number;
+    status: number;
+}
+
+export enum ProgramStatus {
+    Running = "Running",
+    Done = "Done",
+    Error = "Error",
 }
 
 export class ProgramAddRequest implements IProgramAddRequest {
@@ -876,12 +1183,7 @@ export class ProgramInstruction implements IProgramInstruction {
     step!: number;
     machineMask!: number;
     command?: string | null;
-    parameter1?: string | null;
-    parameter2?: string | null;
-    parameter3?: string | null;
-    parameter4?: string | null;
-    parameter5?: string | null;
-    workspaceSlot!: number;
+    parameters?: string | null;
 
     constructor(data?: IProgramInstruction) {
         if (data) {
@@ -897,12 +1199,7 @@ export class ProgramInstruction implements IProgramInstruction {
             this.step = _data["step"] !== undefined ? _data["step"] : <any>null;
             this.machineMask = _data["machineMask"] !== undefined ? _data["machineMask"] : <any>null;
             this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
-            this.parameter1 = _data["parameter1"] !== undefined ? _data["parameter1"] : <any>null;
-            this.parameter2 = _data["parameter2"] !== undefined ? _data["parameter2"] : <any>null;
-            this.parameter3 = _data["parameter3"] !== undefined ? _data["parameter3"] : <any>null;
-            this.parameter4 = _data["parameter4"] !== undefined ? _data["parameter4"] : <any>null;
-            this.parameter5 = _data["parameter5"] !== undefined ? _data["parameter5"] : <any>null;
-            this.workspaceSlot = _data["workspaceSlot"] !== undefined ? _data["workspaceSlot"] : <any>null;
+            this.parameters = _data["parameters"] !== undefined ? _data["parameters"] : <any>null;
         }
     }
 
@@ -918,12 +1215,7 @@ export class ProgramInstruction implements IProgramInstruction {
         data["step"] = this.step !== undefined ? this.step : <any>null;
         data["machineMask"] = this.machineMask !== undefined ? this.machineMask : <any>null;
         data["command"] = this.command !== undefined ? this.command : <any>null;
-        data["parameter1"] = this.parameter1 !== undefined ? this.parameter1 : <any>null;
-        data["parameter2"] = this.parameter2 !== undefined ? this.parameter2 : <any>null;
-        data["parameter3"] = this.parameter3 !== undefined ? this.parameter3 : <any>null;
-        data["parameter4"] = this.parameter4 !== undefined ? this.parameter4 : <any>null;
-        data["parameter5"] = this.parameter5 !== undefined ? this.parameter5 : <any>null;
-        data["workspaceSlot"] = this.workspaceSlot !== undefined ? this.workspaceSlot : <any>null;
+        data["parameters"] = this.parameters !== undefined ? this.parameters : <any>null;
         return data; 
     }
 }
@@ -932,12 +1224,7 @@ export interface IProgramInstruction {
     step: number;
     machineMask: number;
     command?: string | null;
-    parameter1?: string | null;
-    parameter2?: string | null;
-    parameter3?: string | null;
-    parameter4?: string | null;
-    parameter5?: string | null;
-    workspaceSlot: number;
+    parameters?: string | null;
 }
 
 export class ProgramInformation implements IProgramInformation {
@@ -986,6 +1273,121 @@ export interface IProgramInformation {
     programName?: string | null;
     programDescription?: string | null;
     numberOfProgramSteps: number;
+}
+
+export class ProgramDetails implements IProgramDetails {
+    programId?: string | null;
+    programName?: string | null;
+    programDescription?: string | null;
+    numberOfProgramSteps!: number;
+    instructions?: ProgramInstructionItem[] | null;
+
+    constructor(data?: IProgramDetails) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+            if (data.instructions) {
+                this.instructions = [];
+                for (let i = 0; i < data.instructions.length; i++) {
+                    let item = data.instructions[i];
+                    this.instructions[i] = item && !(<any>item).toJSON ? new ProgramInstructionItem(item) : <ProgramInstructionItem>item;
+                }
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.programId = _data["programId"] !== undefined ? _data["programId"] : <any>null;
+            this.programName = _data["programName"] !== undefined ? _data["programName"] : <any>null;
+            this.programDescription = _data["programDescription"] !== undefined ? _data["programDescription"] : <any>null;
+            this.numberOfProgramSteps = _data["numberOfProgramSteps"] !== undefined ? _data["numberOfProgramSteps"] : <any>null;
+            if (Array.isArray(_data["instructions"])) {
+                this.instructions = [] as any;
+                for (let item of _data["instructions"])
+                    this.instructions!.push(ProgramInstructionItem.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): ProgramDetails {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramDetails();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["programId"] = this.programId !== undefined ? this.programId : <any>null;
+        data["programName"] = this.programName !== undefined ? this.programName : <any>null;
+        data["programDescription"] = this.programDescription !== undefined ? this.programDescription : <any>null;
+        data["numberOfProgramSteps"] = this.numberOfProgramSteps !== undefined ? this.numberOfProgramSteps : <any>null;
+        if (Array.isArray(this.instructions)) {
+            data["instructions"] = [];
+            for (let item of this.instructions)
+                data["instructions"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IProgramDetails {
+    programId?: string | null;
+    programName?: string | null;
+    programDescription?: string | null;
+    numberOfProgramSteps: number;
+    instructions?: IProgramInstructionItem[] | null;
+}
+
+export class ProgramInstructionItem implements IProgramInstructionItem {
+    numberOfStep!: number;
+    operationMask!: number;
+    command?: string | null;
+    parameters?: string | null;
+
+    constructor(data?: IProgramInstructionItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.numberOfStep = _data["numberOfStep"] !== undefined ? _data["numberOfStep"] : <any>null;
+            this.operationMask = _data["operationMask"] !== undefined ? _data["operationMask"] : <any>null;
+            this.command = _data["command"] !== undefined ? _data["command"] : <any>null;
+            this.parameters = _data["parameters"] !== undefined ? _data["parameters"] : <any>null;
+        }
+    }
+
+    static fromJS(data: any): ProgramInstructionItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new ProgramInstructionItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["numberOfStep"] = this.numberOfStep !== undefined ? this.numberOfStep : <any>null;
+        data["operationMask"] = this.operationMask !== undefined ? this.operationMask : <any>null;
+        data["command"] = this.command !== undefined ? this.command : <any>null;
+        data["parameters"] = this.parameters !== undefined ? this.parameters : <any>null;
+        return data; 
+    }
+}
+
+export interface IProgramInstructionItem {
+    numberOfStep: number;
+    operationMask: number;
+    command?: string | null;
+    parameters?: string | null;
 }
 
 export class ApiException extends Error {

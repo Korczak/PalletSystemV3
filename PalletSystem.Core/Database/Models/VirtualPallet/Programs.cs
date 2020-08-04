@@ -13,6 +13,7 @@ namespace PalletSystem.Core.Database.Models.VirtualPallet
         [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        public string Name { get; set; }
         public int ActiveStep { get; set; }
         public IEnumerable<ProgramStepsHistories> ProgramStepsHistories { get; set; } = new List<ProgramStepsHistories>();
         public IEnumerable<ProgramStepsInstructions> ProgramStepsInstructions { get; set; } = new List<ProgramStepsInstructions>();

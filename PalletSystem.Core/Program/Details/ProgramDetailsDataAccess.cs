@@ -1,37 +1,38 @@
-﻿using System.Linq;
+﻿using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using PalletSystem.Core.Database.Settings;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PalletSystem.Core.Program.Details
 {
     public class ProgramDetailsDataAccess
     {
-        public async Task<ProgramDetails> GetProgramDetails(int id)
+        public async Task<ProgramDetails> GetProgram(string programId)
         {
-            //using (var db = new PalletDB())
-            //{
-            //    var programInstructions = await db.ProgramStepsInstructions
-            //        .Where(x => x.ProgramId == id)
-            //        .Select(x => new ProgramStepCommand(
-            //            x.Step,
-            //            x.MachineMask,
-            //            x.Command,
-            //            x.Parameter1,
-            //            x.Parameter2,
-            //            x.Parameter3,
-            //            x.Parameter4,
-            //            x.Parameter5,
-            //            x.WorkspaceSlot))
-            //        .ToListAsync();
+            using (var handler = new DatabaseHandler())
+            {
+                var programDetails = await handler.db.ProgramSchemes.AsQueryable()
+                    .Where(x => !x.IsDelete && x.Id == programId)
+                    .Select(x => new
+                    {
+                        x.Id,
+                        x.Name,
+                        x.Description,
+                        x.ProgramStepsInstructions
+                    })
+                        //x.ProgramStepsInstructions.Select(i => new ProgramInstructionItem(i.Step, i.OperationMask, i.Command, i.Parameters)).ToList()))
+                    .FirstOrDefaultAsync();
 
-            //    var programDetails = await db.Programs
-            //        .LoadWith(x => x.Instructions)
-            //        .Where(x => x.Id == id)
-            //        .Select(x => new ProgramDetails(x.Id, x.Name, x.Description, x.NumberOfSteps, programInstructions))
-            //        .FirstOrDefaultAsync();
+                var result = new ProgramDetails(
+                    programDetails.Id,
+                    programDetails.Name,
+                    programDetails.Description,
+                    programDetails.ProgramStepsInstructions.Count(),
+                    programDetails.ProgramStepsInstructions.Select(i => new ProgramInstructionItem(i.Step, i.OperationMask, i.Command, i.Parameters)));
 
-            //    return programDetails;
-            //}
-            return null;
+                return result;
+            }
         }
     }
 }

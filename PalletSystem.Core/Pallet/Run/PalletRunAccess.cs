@@ -25,13 +25,13 @@ namespace PalletSystem.Core.Pallet.Run
             }
         }
 
-        public async Task<string> GetProgramId(string id)
+        public async Task<string> GetProgramName(string id)
         {
             using (var handler = new DatabaseHandler())
             {
                 return await handler.db.ProgramSchemes.AsQueryable()
                     .Where(x => x.Id == id)
-                    .Select(x => x.Id)
+                    .Select(x => x.Name)
                     .FirstOrDefaultAsync();
             }
         }
@@ -62,6 +62,7 @@ namespace PalletSystem.Core.Pallet.Run
                         Program = new Programs()
                         {
                             Id = pallet.ProgramId,
+                            Name = pallet.ProgramName,
                             ActiveStep = 1,
                             ProgramStepsInstructions = pallet.Instructions
                         },

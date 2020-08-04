@@ -1,31 +1,29 @@
 ﻿using PalletSystem.PLCConnector.Client;
 using PalletSystem.PLCConnector.PlcConnector.Constants;
 using PalletSystem.PLCConnector.PlcConnector.Models;
-using PalletSystem.PLCConnector.WebConnect;
-using S7.Net;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Threading.Tasks;
+using Serilog;
 using Sharp7;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace PalletSystem.PLCConnector.PlcConnector
 {
-    class Station
+    internal class Station
     {
         public int DB { get; private set; }
         public int LiveCounter { get; private set; }
         public StationState Order { get; private set; }
         public VirtualPalletGetNextStepResponse NextStepResponse { get; private set; }
         public VirtualPalletSaveResult SaveResultResponse { get; private set; }
-        private CurrentOperation currentOperation = CurrentOperation.GetNextStep;
+        private CurrentOperation currentOperation;
         public ushort ResponseOrder { get; set; }
+
         public Station(int _db)
         {
             DB = _db;
         }
-        public void Processing(Sharp7.S7Client client)
+
+        public void Processing(S7Client client)
         {
             byte[] buff = new byte[4];
             client.DBRead(DB, (int)TraceOffset.plcLiveCounter, 4, buff);
@@ -37,17 +35,20 @@ namespace PalletSystem.PLCConnector.PlcConnector
             {
                 case StationState.Idle:
                     {
+                        Log.Debug($"Station {DB} is IDLE");
                         IdleProcessing(client, order);
                         ResponseOrder = 0;
                         break;
                     }
                 case StationState.WaitForResponse:
                     {
+                        Log.Debug($"Station {DB} is waiting for response");
                         ResponseOrder = 0;
                         break;
                     }
                 case StationState.ResponseReady:
                     {
+                        Log.Debug($"Station {DB} response is ready");
                         var isSuccess = true;
                         ResponseProcessing(client, ref autoResponse, ref isSuccess);
                         Order = StationState.WaitForIdle;
@@ -55,6 +56,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
                     }
                 case StationState.WaitForIdle:
                     {
+                        Log.Debug($"Station {DB} waits for idle");
                         if (order == 0)
                             Order = StationState.Idle;
                         break;
@@ -79,11 +81,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
                         Order = 1,
                         Command = string.Join(';',
                                               NextStepResponse.NextStep.Command,
-                                              NextStepResponse.NextStep.Parameter1,
-                                              NextStepResponse.NextStep.Parameter2,
-                                              NextStepResponse.NextStep.Parameter3,
-                                              NextStepResponse.NextStep.Parameter4,
-                                              NextStepResponse.NextStep.Parameter5),
+                                              NextStepResponse.NextStep.Parameters),
                         OperationMask = (uint)NextStepResponse.NextStep.OperationMask,
                         RFID = NextStepResponse.Rfid,
                         Status = 1
@@ -149,6 +147,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
 
         private void SaveResults(PlcModel plcModel)
         {
+            Log.Debug($"Result is saved for pallet with rfid {plcModel.RFID} on station {DB}");
             var client = new ConnectorClient(Program.GetConfig().WebApiUrl, new System.Net.Http.HttpClient());
             var results = new List<VirtualPalletResultItem>();
             foreach (var result in plcModel.Results)
@@ -175,6 +174,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
 
         private void GetNextStep(PlcModel plcModel)
         {
+            Log.Debug($"Pallet with rfid {plcModel.RFID} on station {DB} retrieves for next step");
             var client = new ConnectorClient(Program.GetConfig().WebApiUrl, new System.Net.Http.HttpClient());
             var response = client.GetNextStepAsync(plcModel.RFID).GetAwaiter().GetResult();
             if (response.NextStep.OperationMask > 0)

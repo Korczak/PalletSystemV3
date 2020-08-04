@@ -40,7 +40,7 @@ const language = {
 	StepsToDo: "Instrukcje do wykonania",
 	MachineMask: "Maska",
 	Command: "Komenda",
-	Parameter: "Parametr",
+	Parameters: "Parametry",
 	WorkspaceSlot: "Miejsce maszyny",
 	Actions: "Akcje",
 	StepsInstruction: "Instrukcje",
@@ -54,7 +54,11 @@ const language = {
 	Waiting: "Czeka",
 	Running: "W trakcie wykonywania zadania",
 	Done: "Zadanie zrobione",
-	Error: "Blad"
+	Error: "Blad",
+	ValueExceed: "Wartosc wykracza poza dozwolone wartosci",
+	OperationMask: "Maska operacji",
+	Results: "Wyniki",
+	ProgramProgress: "Postęp programu"
 };
 
 export default language;

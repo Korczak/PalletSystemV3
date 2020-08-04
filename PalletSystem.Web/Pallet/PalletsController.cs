@@ -6,19 +6,27 @@ using PalletSystem.Core.Pallet.List;
 using PalletSystem.Core.Pallet.Add;
 using PalletSystem.Core.Pallet.Run;
 using PalletSystem.Core.Pallet.Finish;
+using PalletSystem.Core.VirtualPallet.Details;
 
 namespace PalletSystem.Web.Pallet
 {
     public class PalletsController : ControllerBase
     {
         private readonly PalletListDataAccess _listDataAccess;
+        private readonly VirtualPalletDetailsDataAccess _virtualPalletDetails;
         private readonly PalletAddService _addService;
         private readonly PalletRunService _runService;
         private readonly PalletFinishService _finishService;
 
-        public PalletsController(PalletListDataAccess listDataAccess, PalletAddService addService, PalletRunService runService, PalletFinishService finishService)
+        public PalletsController(
+            PalletListDataAccess listDataAccess,
+            VirtualPalletDetailsDataAccess virtualPalletDetails,
+            PalletAddService addService,
+            PalletRunService runService,
+            PalletFinishService finishService)
         {
             _listDataAccess = listDataAccess;
+            _virtualPalletDetails = virtualPalletDetails;
             _addService = addService;
             _runService = runService;
             _finishService = finishService;
@@ -58,6 +66,15 @@ namespace PalletSystem.Web.Pallet
         public async Task<IActionResult> GetPallets()
         {
             var result = await _listDataAccess.GetPalletList();
+
+            return Ok(result);
+        }
+
+        [HttpGet("api/virtualPallet/{virtualPalletId}")]
+        [ProducesResponseType(typeof(VirtualPalletDetails), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetVirtualPalletDetails(string virtualPalletId)
+        {
+            var result = await _virtualPalletDetails.GetVirtualPalletDetails(virtualPalletId);
 
             return Ok(result);
         }

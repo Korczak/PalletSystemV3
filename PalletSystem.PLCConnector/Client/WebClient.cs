@@ -534,20 +534,8 @@ namespace PalletSystem.PLCConnector.Client
         [Newtonsoft.Json.JsonProperty("command", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Command { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("parameter1", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Parameter1 { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("parameter2", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Parameter2 { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("parameter3", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Parameter3 { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("parameter4", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Parameter4 { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("parameter5", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Parameter5 { get; set; }
+        [Newtonsoft.Json.JsonProperty("parameters", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Parameters { get; set; }
     
     
     }

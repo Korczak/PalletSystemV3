@@ -9,6 +9,7 @@ namespace PalletSystem.Core.Pallet.List
     public class PalletInformation
     {
         public string Id { get; }
+        public string VirtualPalletId { get; }
         public string RFID { get; }
         public string ProgramName { get; }
         public int StepsDone { get; }
@@ -25,9 +26,10 @@ namespace PalletSystem.Core.Pallet.List
             IsVirtualPalletActive = false;
         }
 
-        public PalletInformation(string id, string rFID, string programName, int stepsDone, int stepsTotal, VirtualPalletStatus virtualPalletStatus, PalletStatus palletStatus)
+        public PalletInformation(string id, string virtualPalletId, string rFID, string programName, int stepsDone, int stepsTotal, VirtualPalletStatus virtualPalletStatus, PalletStatus palletStatus)
         {
             Id = id;
+            VirtualPalletId = virtualPalletId;
             RFID = rFID;
             ProgramName = programName;
             StepsDone = stepsDone;

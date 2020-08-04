@@ -29,7 +29,7 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
 
             var currentInstant = clock.GetCurrentInstant();
 
-            var results = request.Results.Select(r => new ProgramStepResultItem() { Status = r.Status, Value = r.Value }).ToList();
+            var results = request.Results.Select(r => new ProgramStepResultItem() { Status = r.Status, Value = r.Value, Index = r.Id }).ToList();
 
             Saved = new ResultSaved(source.Id, currentInstant, source.ActualStep, request.WorkspaceSlot, request.OperationMask, programStatus, palletStatus, results);
         }

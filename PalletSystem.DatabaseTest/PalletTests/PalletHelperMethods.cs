@@ -37,13 +37,13 @@ namespace PalletSystem.DatabaseTest.PalletTests
                     {
                         OperationMask = 111,
                         Step = 1,
-                        Parameter1 = "1.2"
+                        Parameters = "1.2"
                     },
                     new ProgramStepsInstructions()
                     {
                         OperationMask = 111,
                         Step = 2,
-                        Parameter1 = "1.2"
+                        Parameters = "1.2"
                     }
                 }; 
                 var id = ObjectIdGenerator.Instance.GenerateId(handler.db.ProgramSchemes, new ProgramSchemes()).ToString();

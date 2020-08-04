@@ -36,7 +36,7 @@ namespace PalletSystem.Core.VirtualPallet.GetNextStep
 
                 var nextStep = program.Instructions
                     .Where(i => i.Step == program.ActiveStep)
-                    .Select(i => new NextStepInformation(i.OperationMask, program.Status, i.Command, i.Parameter1, i.Parameter2, i.Parameter3, i.Parameter4, i.Parameter5))
+                    .Select(i => new NextStepInformation(i.OperationMask, program.Status, i.Command, i.Parameters))
                     .FirstOrDefault();
 
                 return nextStep;

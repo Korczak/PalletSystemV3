@@ -23,22 +23,10 @@ namespace PalletSystem.Core.Program.Add
                         {
                             Command = instruction.Command,
                             OperationMask = instruction.MachineMask,
-                            Parameter1 = instruction.Parameter1,
-                            Parameter2 = instruction.Parameter2,
-                            Parameter3 = instruction.Parameter3,
-                            Parameter4 = instruction.Parameter4,
-                            Parameter5 = instruction.Parameter5,
+                            Parameters = instruction.Parameters,
                             Step = instruction.Step
                         });
                     }
-
-                    programInstruction.Add(new ProgramStepsInstructions()
-                    {
-                        Command = "",
-                        OperationMask = 5,
-                        Step = programInstruction.Count + 1
-                    });
-
 
                     var programToInsert = new ProgramSchemes()
                     {

@@ -18,6 +18,7 @@
 						<v-layout class="actions" justify-end>
 							<add-program-dialog
 								@onAdded="loadData"
+								:addNew="true"
 							></add-program-dialog>
 						</v-layout>
 					</v-col>
@@ -44,7 +45,12 @@
 							</span>
 						</template>
 						<template v-slot:item.actions="{ item }">
-							<v-btn width="35" height="35" icon>
+							<v-btn
+								width="35"
+								height="35"
+								icon
+								@click="showDetails(item.programId)"
+							>
 								<v-icon x-large color="#90caf9">forward</v-icon>
 							</v-btn>
 						</template>
@@ -52,6 +58,13 @@
 				</div>
 			</v-container>
 		</v-row>
+		<add-program-dialog
+			v-if="showProgramDetails"
+			@onAdded="loadData"
+			:addNew="false"
+			:programId="programId"
+			@onClose="showProgramDetails = false"
+		></add-program-dialog>
 	</v-container>
 </template>
 
@@ -81,6 +94,9 @@ export default class ProgramMain extends Mixins(Translation) {
 
 	programs: ProgramInformation[] = [];
 
+	showProgramDetails = false;
+	programId: number | undefined;
+
 	async mounted() {
 		await this.loadData();
 	}
@@ -88,6 +104,11 @@ export default class ProgramMain extends Mixins(Translation) {
 	async loadData() {
 		const response = await this.programClient.getPrograms();
 		this.programs = response;
+	}
+
+	showDetails(programId: number) {
+		this.showProgramDetails = true;
+		this.programId = programId;
 	}
 
 	get headers() {

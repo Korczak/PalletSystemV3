@@ -24,6 +24,7 @@ namespace PalletSystem.Core.Pallet.List
                                  join program in handler.db.ProgramSchemes.AsQueryable() on virtualPallet.Program.Id equals program.Id
                                  select new PalletInformation(
                                      pallet.Id,
+                                     virtualPallet.Id,
                                      pallet.RFID,
                                      program.Name,
                                      virtualPallet.Program.ProgramStepsHistories.Count(),

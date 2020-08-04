@@ -20,14 +20,14 @@ namespace PalletSystem.Core.Pallet.Run
             if (request == null || request.ProgramId == null || request.PalletId == null) throw new ArgumentNullException(nameof(request));
 
             var palletSource = await _access.GetPalletSource(request.PalletId);
-            var programId = await _access.GetProgramId(request.ProgramId);
+            var programName = await _access.GetProgramName(request.ProgramId);
             var instrucions = await _access.GetProgramInstructions(request.ProgramId);
 
             if (palletSource == default || palletSource.Id == default) return PalletRunResult.PalletNotExists;
             if (palletSource.Status != Constant.PalletStatus.Ready) return PalletRunResult.PalletNotReady;
-            if (programId == default) return PalletRunResult.ProgramNotExists;
+            if (programName == default) return PalletRunResult.ProgramNotExists;
 
-            await _access.RunPallet(new PalletRun(request.PalletId, request.ProgramId, instrucions));
+            await _access.RunPallet(new PalletRun(request.PalletId, request.ProgramId, programName, instrucions));
             await _statusHub.ActualStatusUpdate(Constant.PalletStatus.Running);
             return PalletRunResult.PalletRun;
         }

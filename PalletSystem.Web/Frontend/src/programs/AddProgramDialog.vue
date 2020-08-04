@@ -1,6 +1,6 @@
 <template>
-	<v-dialog v-model="dialog" @input="loadData" persistent max-width="960px">
-		<template v-slot:activator="{ on }">
+	<v-dialog v-model="dialog" persistent max-width="960px">
+		<template v-slot:activator="{ on }" v-if="addNew">
 			<v-btn
 				class="oval-button"
 				fab
@@ -39,9 +39,6 @@
 										:label="translation.Description"
 										v-model="programInput.description"
 										required
-										:rules="[
-											v => !!v || translation.Required
-										]"
 									></v-textarea>
 								</v-row>
 								<v-row>
@@ -63,27 +60,10 @@
 															{{ header.text }}
 														</th>
 													</tr>
-													<tr>
-														<th class="text-left">
-															Parameter 1
-														</th>
-														<th class="text-left">
-															Parameter 2
-														</th>
-														<th class="text-left">
-															Parameter 3
-														</th>
-														<th class="text-left">
-															Parameter 4
-														</th>
-														<th class="text-left">
-															Parameter 5
-														</th>
-													</tr>
 												</thead>
 												<tbody
-													v-for="item in steps"
-													:key="item.step"
+													v-for="item in instructions"
+													v-bind:key="item.step"
 												>
 													<tr>
 														<td>
@@ -91,22 +71,36 @@
 														</td>
 														<td>
 															<v-text-field
+																:disabled="
+																	!addNew
+																"
 																v-model="
 																	item.machineMask
 																"
 																type="number"
-																max="5"
+																max="32"
 																min="0"
 																required
+																:counter="32"
 																:rules="[
 																	v =>
 																		!!v ||
-																		translation.Required
+																		translation.Required,
+																	v =>
+																		v <=
+																			32 ||
+																		translation.ValueExceed,
+																	v =>
+																		v > 0 ||
+																		translation.ValueExceed
 																]"
 															></v-text-field>
 														</td>
 														<td>
 															<v-text-field
+																:disabled="
+																	!addNew
+																"
 																v-model="
 																	item.command
 																"
@@ -120,8 +114,11 @@
 														</td>
 														<td>
 															<v-text-field
+																:disabled="
+																	!addNew
+																"
 																v-model="
-																	item.workspaceSlot
+																	item.parameters
 																"
 																required
 																:rules="[
@@ -132,82 +129,14 @@
 															></v-text-field>
 														</td>
 													</tr>
-													<tr>
-														<td>
-															<v-text-field
-																v-model="
-																	item.parameter1
-																"
-															></v-text-field>
-														</td>
-														<td>
-															<v-text-field
-																v-model="
-																	item.parameter2
-																"
-															></v-text-field>
-														</td>
-														<td>
-															<v-text-field
-																v-model="
-																	item.parameter3
-																"
-															></v-text-field>
-														</td>
-														<td>
-															<v-text-field
-																v-model="
-																	item.parameter4
-																"
-															></v-text-field>
-														</td>
-														<td>
-															<v-text-field
-																v-model="
-																	item.parameter5
-																"
-															></v-text-field>
-														</td>
-													</tr>
 												</tbody>
-												<!-- 
-												<template
-													v-slot:item.parameter="{
-														item
-													}"
-												>
-													<v-text-field
-														v-model="
-															item.parameters
-														"
-														required
-														:rules="[
-															v =>
-																!!v ||
-																translation.Required
-														]"
-													></v-text-field>
-												</template>
-												<template
-													v-slot:item.workspaceSlot="{
-														item
-													}"
-												>
-													<v-text-field
-														v-model="
-															item.workspaceSlot
-														"
-														required
-														:rules="[
-															v =>
-																!!v ||
-																translation.Required
-														]"
-													></v-text-field>
-												</template> -->
 											</template>
 										</v-simple-table>
-										<v-row justify="end" class="pr-3">
+										<v-row
+											justify="end"
+											class="pr-3"
+											v-if="addNew"
+										>
 											<v-btn
 												:elevation="3"
 												color="#00468b"
@@ -228,6 +157,7 @@
 							<discard-btn @click="closeDialog"></discard-btn>
 							<v-spacer></v-spacer>
 							<save-btn
+								v-if="addNew"
 								@click="saveData"
 								:disabled="!valid"
 								:text="this.translation.Save"
@@ -242,39 +172,75 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Mixins, Inject, Prop } from "vue-property-decorator";
+import {
+	Vue,
+	Component,
+	Mixins,
+	Inject,
+	Prop,
+	Watch
+} from "vue-property-decorator";
 import Translation from "@/language/translation";
 import {
 	ProgramAddRequest,
 	ProgramClient,
 	ProgramInstruction,
-	ProgramInformation
+	ProgramInformation,
+	ProgramDetails
 } from "../api-clients/ClientsGenerated";
 
 @Component({ components: {} })
 export default class AddPalletDialog extends Mixins(Translation) {
 	@Inject() readonly programClient!: ProgramClient;
+	@Prop() readonly addNew!: boolean;
+	@Prop() readonly programId: string | undefined;
 
 	programInput: ProgramAddRequest = new ProgramAddRequest();
-	steps: ProgramInstruction[] = [];
+	instructions: ProgramInstruction[] = [];
 	stepsNum: number = 1;
 
 	dialog = false;
 	valid = false;
 	errorMessage: string | null = null;
-	loadData() {}
+
+	async loadData() {
+		const programDetails = await this.programClient.getProgramDetails(
+			this.programId!
+		);
+
+		this.programInput.name = programDetails.programName;
+		this.programInput.description = programDetails.programDescription;
+		this.instructions = programDetails.instructions!.map(
+			i =>
+				new ProgramInstruction({
+					step: i.numberOfStep,
+					machineMask: i.operationMask,
+					command: i.command,
+					parameters: i.parameters
+				})
+		);
+		debugger;
+	}
+
 	closeDialog() {
 		this.stepsNum = 1;
 		let instruction = new ProgramInstruction();
 		instruction.step = this.stepsNum++;
-		this.steps = [instruction];
+		this.instructions = [instruction];
 		this.dialog = false;
+		this.$emit("onClose");
 	}
 
 	mounted() {
 		let instruction = new ProgramInstruction();
 		instruction.step = this.stepsNum++;
-		this.steps = [instruction];
+		this.instructions = [instruction];
+		this.programInput.description = "";
+		this.programInput.name = "";
+		if (this.addNew == false) {
+			this.dialog = true;
+			this.loadData();
+		}
 	}
 
 	async saveData() {
@@ -284,8 +250,7 @@ export default class AddPalletDialog extends Mixins(Translation) {
 
 		if (!this.valid) return;
 
-		const request = this.programInput;
-		request.instructions = this.steps;
+		this.programInput.instructions = this.instructions;
 
 		await this.programClient.addProgram(this.programInput);
 		this.$emit("onAdded");
@@ -298,16 +263,15 @@ export default class AddPalletDialog extends Mixins(Translation) {
 			{ text: this.translation.MachineMask, value: "machineMask" },
 			{ text: this.translation.Command, value: "command" },
 			{
-				text: this.translation.WorkspaceSlot,
-				sortable: false,
-				value: "workspaceSlot"
+				text: this.translation.Parameters,
+				value: "parameters"
 			}
 		];
 	}
 	addStep() {
 		var instruction = new ProgramInstruction();
 		instruction.step = this.stepsNum++;
-		this.steps.push(instruction);
+		this.$set(this.instructions!, this.instructions!.length, instruction);
 	}
 }
 </script>

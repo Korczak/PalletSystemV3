@@ -6,19 +6,19 @@ namespace PalletSystem.Core.Program.Details
 {
     public class ProgramDetails
     {
-        public int ProgramId { get; }
+        public string ProgramId { get; }
         public string ProgramName { get; }
         public string ProgramDescription { get; }
-        public int NumberOfSteps { get; }
-        public IEnumerable<ProgramStepCommand> ProgramStepCommands { get; }
+        public int NumberOfProgramSteps{ get; }
+        public IEnumerable<ProgramInstructionItem> Instructions { get; }
 
-        public ProgramDetails(int programId, string programName, string programDescription, int numberOfSteps, IEnumerable<ProgramStepCommand> programStepCommands)
+        public ProgramDetails(string programId, string programName, string programDescription, int numberOfProgramSteps, IEnumerable<ProgramInstructionItem> instructions)
         {
             ProgramId = programId;
             ProgramName = programName;
             ProgramDescription = programDescription;
-            NumberOfSteps = numberOfSteps;
-            ProgramStepCommands = programStepCommands;
+            NumberOfProgramSteps = numberOfProgramSteps;
+            Instructions = instructions;
         }
     }
 }

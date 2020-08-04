@@ -9,12 +9,18 @@ namespace PalletSystem.Core.Pallet.Run
     {
         public string PalletId { get; }
         public string ProgramId { get; }
+        public string ProgramName { get; }
         public ImmutableList<ProgramStepsInstructions> Instructions { get; }
 
-        public PalletRun(string palletId, string programId, IEnumerable<ProgramStepsInstructions> instructions)
+        public PalletRun(
+            string palletId,
+            string programId,
+            string programName,
+            IEnumerable<ProgramStepsInstructions> instructions)
         {
             PalletId = palletId;
             ProgramId = programId;
+            ProgramName = programName;
             Instructions = instructions.ToImmutableList();
         }
     }

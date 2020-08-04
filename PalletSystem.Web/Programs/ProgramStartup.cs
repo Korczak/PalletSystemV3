@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using PalletSystem.Core.Program.Add;
+using PalletSystem.Core.Program.Details;
 using PalletSystem.Core.Program.List;
 using PalletSystem.Web.Configuration;
 
@@ -13,6 +14,8 @@ namespace PalletSystem.Web.Programs
             services.AddSingleton<ProgramAddAccess>();
 
             services.AddSingleton<ProgramListAccess>();
+
+            services.AddSingleton<ProgramDetailsDataAccess>();
         }
     }
 }

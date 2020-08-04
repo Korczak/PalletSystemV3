@@ -61,10 +61,20 @@
 				<v-divider></v-divider>
 
 				<v-card-actions>
-					<v-btn text>{{ translation.FullReport }}</v-btn>
+					<v-btn
+						@click="showReport = true"
+						text
+						v-if="!isPalletReady"
+						>{{ translation.FullReport }}</v-btn
+					>
 				</v-card-actions>
 			</v-card>
 		</v-container>
+		<details-pallet-dialog
+			v-if="showReport"
+			:palletInformation="pallet"
+			@onClose="showReport = false"
+		></details-pallet-dialog>
 	</v-col>
 </template>
 
@@ -87,13 +97,16 @@ import { globalStore } from "@/main";
 import moment from "moment";
 import RunPalletDialog from "./RunPalletDialog.vue";
 import SettingsPalletDialog from "./SettingsPalletDialog.vue";
+import DetailsPalletDialog from "./DetailsPalletDialog.vue";
 
 @Component({
-	components: { SettingsPalletDialog, RunPalletDialog }
+	components: { SettingsPalletDialog, RunPalletDialog, DetailsPalletDialog }
 })
 export default class PalletItem extends Mixins(Translation) {
 	@Inject() readonly palletClient!: PalletsClient;
 	@Prop() readonly pallet!: PalletInformation;
+
+	showReport = false;
 
 	get getPalletClass(): string {
 		if (this.pallet.palletStatus == PalletStatus.Running) {
