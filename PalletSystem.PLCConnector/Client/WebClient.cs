@@ -578,7 +578,7 @@ namespace PalletSystem.PLCConnector.Client
         public int WorkspaceSlot { get; set; }
     
         [Newtonsoft.Json.JsonProperty("operationMask", Required = Newtonsoft.Json.Required.Always)]
-        public int OperationMask { get; set; }
+        public string OperationMask { get; set; }
     
         [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Always)]
         public int Status { get; set; }

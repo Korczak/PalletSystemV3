@@ -12,7 +12,7 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
         public Instant Instant { get; }
         public int ActualStep { get; }
         public int WorkspaceSlot { get; }
-        public int OperationMask { get; }
+        public string OperationMask { get; }
         public ProgramStatus ProgramStatus { get; }
         public VirtualPalletStatus VirtualPalletStatus { get; }
         public IEnumerable<ProgramStepResultItem> Results { get; }
@@ -22,7 +22,7 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
             Instant instant,
             int actualStep,
             int workspaceSlot,
-            int operationMask,
+            string operationMask,
             ProgramStatus programStatus,
             VirtualPalletStatus virtualPalletStatus,
             IEnumerable<ProgramStepResultItem> results)

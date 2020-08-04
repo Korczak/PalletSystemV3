@@ -9,11 +9,11 @@ namespace PalletSystem.Core.VirtualPallet.SaveResult
     {
         public string RFID { get; }
         public int WorkspaceSlot { get; }
-        public int OperationMask { get; }
+        public string OperationMask { get; }
         public int Status { get; }
         public IEnumerable<VirtualPalletResultItem> Results { get; }
 
-        public VirtualPalletSaveResultRequest(string rFID, int workspaceSlot, int operationMask, int status, IEnumerable<VirtualPalletResultItem> results)
+        public VirtualPalletSaveResultRequest(string rFID, int workspaceSlot, string operationMask, int status, IEnumerable<VirtualPalletResultItem> results)
         {
             RFID = rFID;
             WorkspaceSlot = workspaceSlot;

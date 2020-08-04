@@ -4,6 +4,7 @@ using PalletSystem.PLCConnector.PlcConnector.Models;
 using Serilog;
 using Sharp7;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace PalletSystem.PLCConnector.PlcConnector
@@ -161,7 +162,7 @@ namespace PalletSystem.PLCConnector.PlcConnector
             }
             var request = new VirtualPalletSaveResultRequest()
             {
-                OperationMask = (int)plcModel.OperationMask,
+                OperationMask = DecodeOperationMask((int)plcModel.OperationMask),
                 Results = results,
                 Status = plcModel.Status,
                 Rfid = plcModel.RFID,
@@ -177,18 +178,39 @@ namespace PalletSystem.PLCConnector.PlcConnector
             Log.Debug($"Pallet with rfid {plcModel.RFID} on station {DB} retrieves for next step");
             var client = new ConnectorClient(Program.GetConfig().WebApiUrl, new System.Net.Http.HttpClient());
             var response = client.GetNextStepAsync(plcModel.RFID).GetAwaiter().GetResult();
-            if (response.NextStep.OperationMask > 0)
+            if (response.Result != VirtualPalletGetNextStepResult.VirtualPalletError && response.NextStep.OperationMask > 0)
             {
                 var operationMask = ((int)plcModel.OperationMask) & (1 << (response.NextStep.OperationMask - 1));
                 response.NextStep.OperationMask = operationMask;
             }
             else
             {
-                response.NextStep.OperationMask = 0;
+                response.NextStep = new NextStepInformation()
+                {
+                    Command = "",
+                    OperationMask = 0,
+                    Parameters = "",
+                    Status = VirtualPalletStatus.Running
+                };
+                //response.NextStep.OperationMask = 0;
             }
             NextStepResponse = response;
 
             Order = StationState.ResponseReady;
+        }
+
+        private static string DecodeOperationMask(int operationMask)
+        {
+            StringBuilder sb = new StringBuilder();
+            
+            for(int i = 0; i < 32; i++)
+            {
+                if((operationMask & (1 << i)) != 0)
+                {
+                    sb.Append(i + 1).Append(", ");
+                }
+            }
+            return sb.ToString();
         }
     }
 }

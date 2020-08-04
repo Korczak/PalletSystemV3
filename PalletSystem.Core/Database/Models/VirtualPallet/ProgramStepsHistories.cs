@@ -15,7 +15,7 @@ namespace PalletSystem.Core.Database.Models.VirtualPallet
 
         public int Step { get; set; }
         public Instant Instant { get; set; }
-        public int OperationMask { get; set; }
+        public string OperationMask { get; set; }
         public int WorkspaceSlot { get; set; }
         public IEnumerable<ProgramStepResultItem> Results { get; set; }
         public ProgramStatus Status { get; set; }

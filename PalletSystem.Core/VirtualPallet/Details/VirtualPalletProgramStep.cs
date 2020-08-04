@@ -9,7 +9,7 @@ namespace PalletSystem.Core.VirtualPallet.Details
 
         public int Step { get; set; }
         public Instant Instant { get; set; }
-        public int OperationMask { get; set; }
+        public string OperationMask { get; set; }
         public int WorkspaceSlot { get; set; }
         public IEnumerable<VirtualPalletProgramStepResult> Results { get; set; }
         public ProgramStatus Status { get; set; }
@@ -17,7 +17,7 @@ namespace PalletSystem.Core.VirtualPallet.Details
         public VirtualPalletProgramStep(
             int step,
             Instant instant,
-            int operationMask,
+            string operationMask,
             int workspaceSlot,
             IEnumerable<VirtualPalletProgramStepResult> results,
             ProgramStatus status)
